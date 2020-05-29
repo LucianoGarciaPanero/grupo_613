@@ -2,7 +2,9 @@ package com.example.tp2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
@@ -28,5 +30,11 @@ public class RegistrarActivity extends AppCompatActivity {
         comboEnv = (Spinner)findViewById(R.id.comboEnv);
         ArrayAdapter<CharSequence> adapterEnv = ArrayAdapter.createFromResource(this, R.array.envs, android.R.layout.simple_spinner_item);
         comboEnv.setAdapter(adapterEnv);
+
+        //Intent intent = getIntent();
+    }
+
+    public void volver(View view){
+        finish();
     }
 }
