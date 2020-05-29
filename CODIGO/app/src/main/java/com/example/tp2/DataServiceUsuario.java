@@ -18,7 +18,7 @@ public class DataServiceUsuario {
     public DataServiceUsuario() {
     }
 
-    public Usuario registrarUsuario(String env, String name, String lastname, int dni, String email, String password, int comission, int group) throws EnvException, PassException{
+    public Usuario registrarUsuario(String env, String name, String lastname, int dni, String email, String password, int comission, int group) throws EnvException, PassException, MalformedURLException, ProtocolException, IOException{
         if(!env.equals("TEST") || !env.equals("DEV")){
             throw new EnvException("El ambiente no se especifico correctamente");
         }
@@ -32,37 +32,30 @@ public class DataServiceUsuario {
         String usuarioString = json.toJson(fs);
 
         // Establezco la conexión y le mando el json.
-        URL url = null;
-        HttpURLConnection con = null;
-        try {
-            url = new URL("http://so-unlam.net.ar/api/api/register");
-            con = (HttpURLConnection) url.openConnection();
-            con.setDoOutput(true);
-            con.setRequestMethod("POST");
-            con.setRequestProperty("Content-Type","application/json");
-            con.connect();
-            OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-            out.write(usuarioString);
-            out.close();
-            int res = con.getResponseCode();
-            if(res == HttpURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader( new InputStreamReader(con.getInputStream(), "utf-8"));
-                String line = null;
-                while ((line = br.readLine()) != null){
-                    System.out.println(line);
-                }
-                br.close();
+        URL url = new URL("http://so-unlam.net.ar/api/api/register");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setDoOutput(true);
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type","application/json");
+        con.connect();
+        OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
+        out.write(usuarioString);
+        out.close();
+
+        //Recibo la información
+        int res = con.getResponseCode();
+        if(res == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader( new InputStreamReader(con.getInputStream(), "utf-8"));
+            String line = null;
+            while ((line = br.readLine()) != null){
+                System.out.println(line);
             }
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if(con != null) {
-                con.disconnect();
-            }
+            br.close();
+        }
+
+        // Por ultimo cierro la conexión
+        if(con != null) {
+            con.disconnect();
         }
 
         return new Usuario(name,lastname,dni,email,comission,group);
