@@ -1,5 +1,7 @@
 package com.example.tp2;
 
+import com.google.gson.Gson;
+
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -15,6 +17,8 @@ public class DataServiceUsuario {
         if (password.length() < 8){
             throw new PassException("La contraseña debe contener al menos 8 caracteres");
         }
+
+        
 
         URL url = new URL("http://so-unlam.net.ar/api/api/register");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
