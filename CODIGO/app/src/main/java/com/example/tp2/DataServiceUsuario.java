@@ -9,8 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 public class DataServiceUsuario {
@@ -18,7 +16,8 @@ public class DataServiceUsuario {
     public DataServiceUsuario() {
     }
 
-    public Usuario registrarUsuario(String env, String name, String lastname, int dni, String email, String password, int comission, int group) throws EnvException, PassException, MalformedURLException, ProtocolException, IOException{
+    public Usuario registrarUsuario(String env, String name, String lastname, int dni, String email, String password, int comission, int group) throws EnvException, PassException, IOException{
+        // Validaciones necesarias
         if(!env.equals("TEST") || !env.equals("DEV")){
             throw new EnvException("El ambiente no se especifico correctamente");
         }

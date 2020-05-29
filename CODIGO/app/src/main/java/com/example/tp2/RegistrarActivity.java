@@ -13,6 +13,7 @@ public class RegistrarActivity extends AppCompatActivity {
     private Spinner comboGrupo;
     private Spinner comboComision;
     private Spinner comboEnv;
+    private ControladorUsuario controladorUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,10 +32,15 @@ public class RegistrarActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapterEnv = ArrayAdapter.createFromResource(this, R.array.envs, android.R.layout.simple_spinner_item);
         comboEnv.setAdapter(adapterEnv);
 
-        //Intent intent = getIntent();
+        this.controladorUsuario = new ControladorUsuario();
     }
 
     public void volver(View view){
         finish();
+    }
+
+    public  void registrar(View view) {
+
+        controladorUsuario.registrarUsuario();
     }
 }

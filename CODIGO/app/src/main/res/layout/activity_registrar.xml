@@ -369,6 +369,7 @@
         android:id="@+id/buttonAceptar"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:onClick="registrar"
         android:text="Aceptar"
         app:layout_constraintBottom_toTopOf="@+id/guideline31"
         app:layout_constraintEnd_toStartOf="@+id/guideline26"
