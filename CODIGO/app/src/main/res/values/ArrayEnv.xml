@@ -2,6 +2,6 @@
 <resources>
     <string-array name="envs">
         <item>TEST</item>
-        <item>DEV</item>
+
     </string-array>
 </resources>
