@@ -7,6 +7,14 @@
     tools:context=".RegistrarActivity">
 
     <TextView
+        android:id="@+id/envLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ENV"
+        tools:layout_editor_absoluteX="42dp"
+        tools:layout_editor_absoluteY="625dp" />
+
+    <TextView
         android:id="@+id/grupoLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -70,8 +78,8 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        tools:layout_editor_absoluteX="33dp"
-        tools:layout_editor_absoluteY="163dp" />
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="120dp" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline19"
@@ -144,4 +152,11 @@
         android:layout_height="37dp"
         tools:layout_editor_absoluteX="131dp"
         tools:layout_editor_absoluteY="525dp" />
+
+    <Spinner
+        android:id="@+id/comboEnv"
+        android:layout_width="248dp"
+        android:layout_height="48dp"
+        tools:layout_editor_absoluteX="101dp"
+        tools:layout_editor_absoluteY="625dp" />
 </androidx.constraintlayout.widget.ConstraintLayout>

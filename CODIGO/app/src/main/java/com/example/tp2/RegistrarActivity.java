@@ -10,6 +10,7 @@ public class RegistrarActivity extends AppCompatActivity {
 
     private Spinner comboGrupo;
     private Spinner comboComision;
+    private Spinner comboEnv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,5 +24,9 @@ public class RegistrarActivity extends AppCompatActivity {
         comboComision = (Spinner)findViewById(R.id.comboComision);
         ArrayAdapter<CharSequence> adapterComision = ArrayAdapter.createFromResource(this, R.array.comisiones, android.R.layout.simple_spinner_item);
         comboComision.setAdapter(adapterComision);
+
+        comboEnv = (Spinner)findViewById(R.id.comboEnv);
+        ArrayAdapter<CharSequence> adapterEnv = ArrayAdapter.createFromResource(this, R.array.envs, android.R.layout.simple_spinner_item);
+        comboEnv.setAdapter(adapterEnv);
     }
 }
