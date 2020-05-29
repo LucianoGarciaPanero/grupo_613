@@ -3,12 +3,25 @@ package com.example.tp2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
 
 public class RegistrarActivity extends AppCompatActivity {
+
+    private Spinner comboGrupo;
+    private Spinner comboComision;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar);
+
+        comboGrupo = (Spinner)findViewById(R.id.comboGrupo);
+        ArrayAdapter<CharSequence> adapterGrupo = ArrayAdapter.createFromResource(this, R.array.grupos, android.R.layout.simple_spinner_item);
+        comboGrupo.setAdapter(adapterGrupo);
+
+        comboComision = (Spinner)findViewById(R.id.comboComision);
+        ArrayAdapter<CharSequence> adapterComision = ArrayAdapter.createFromResource(this, R.array.comisiones, android.R.layout.simple_spinner_item);
+        comboComision.setAdapter(adapterComision);
     }
 }
