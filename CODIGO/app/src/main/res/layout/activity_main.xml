@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <TextView
-        android:id="@+id/mailLabel"
+        android:id="@+id/labelEmail"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="Email"
@@ -22,7 +22,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <TextView
-        android:id="@+id/loginLabel"
+        android:id="@+id/labelLogin"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="Log in"
@@ -36,7 +36,7 @@
         app:layout_constraintVertical_bias="0.494" />
 
     <Button
-        android:id="@+id/ingresarBt"
+        android:id="@+id/buttonIngresar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="Ingresar"
@@ -48,7 +48,7 @@
         app:layout_constraintVertical_bias="1.0" />
 
     <Button
-        android:id="@+id/registrarBt"
+        android:id="@+id/buttonRegistrar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="Registrar"
@@ -60,7 +60,7 @@
         app:layout_constraintVertical_bias="0.902" />
 
     <EditText
-        android:id="@+id/mailTxt"
+        android:id="@+id/txtEmail"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:ems="10"
@@ -72,7 +72,7 @@
         app:layout_constraintVertical_bias="0.666" />
 
     <TextView
-        android:id="@+id/contraseniaLabel"
+        android:id="@+id/labelContrasenia"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:text="Contrasenia"
@@ -86,7 +86,7 @@
         app:layout_constraintVertical_bias="0.343" />
 
     <EditText
-        android:id="@+id/contraTxt"
+        android:id="@+id/txtContrasenia"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:ems="10"
