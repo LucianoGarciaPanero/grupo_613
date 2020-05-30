@@ -1,5 +1,9 @@
 package com.example.tp2;
 
+/*
+La idea de esta clase es de usarla para la serialización y deserialización con Json.
+ */
+
 public class FormularioUsuario {
     private String env;
     private String name;

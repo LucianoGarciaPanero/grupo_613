@@ -19,19 +19,18 @@ public class DataServiceUsuario {
     public DataServiceUsuario() {
     }
 
-    public Usuario registrarUsuario(String env, String name, String lastname, int dni, String email, String password, int comission, int group) throws EnvException, PassException, IOException{
+    public Usuario registrarUsuario(FormularioUsuario fu) throws EnvException, PassException, IOException{
         // Validaciones necesarias
-        if(!env.equals("TEST") && !env.equals("DEV")){
-            throw new EnvException("El ambiente no se especifico correctamente, espeficado: " + env);
+        if(!fu.getEnv().equals("TEST") && !fu.getEnv().equals("DEV")){
+            throw new EnvException("El ambiente no se especifico correctamente, espeficado: " + fu.getEnv());
         }
-        if (password.length() < 8){
+        if (fu.getPassword().length() < 8){
             throw new PassException("La contraseña debe contener al menos 8 caracteres");
         }
 
-        // A partir de los datos del formulario busco crear un objeto json.
-        FormularioUsuario fs = new FormularioUsuario(env, name, lastname, dni, email, password, comission, group);
+        // Serializo fu para mandar los datos
         Gson json = new Gson();
-        String usuarioString = json.toJson(fs);
+        String usuarioString = json.toJson(fu);
 
         // Creo la conexión.
         URL url = new URL(URI_REGISTRO);
@@ -68,6 +67,6 @@ public class DataServiceUsuario {
             con.disconnect();
         }
 
-        return new Usuario(name,lastname,dni,email,comission,group);
+        return null; // TODO: agregar retorno
     }
 }

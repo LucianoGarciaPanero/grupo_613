@@ -11,6 +11,6 @@ public class ControladorUsuario {
     }
 
     public void registrarUsuario(String env, String name, String lastname, int dni, String email, String password, int comission, int group) throws EnvException, PassException, IOException {
-        this.usuario = dataServiceUsuario.registrarUsuario(env, name, lastname, dni, email, password, comission, group);
+        this.usuario = dataServiceUsuario.registrarUsuario(new FormularioUsuario(env, name, lastname, dni, email, password, comission, group));
     }
 }
