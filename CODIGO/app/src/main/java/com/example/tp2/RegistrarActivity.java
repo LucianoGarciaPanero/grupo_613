@@ -45,9 +45,9 @@ public class RegistrarActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar);
 
-        comboGrupo = (Spinner)findViewById(R.id.comboGrupo);
+        this.comboGrupo = (Spinner)findViewById(R.id.comboGrupo);
         ArrayAdapter<CharSequence> adapterGrupo = ArrayAdapter.createFromResource(this, R.array.grupos, android.R.layout.simple_spinner_item);
-        comboGrupo.setAdapter(adapterGrupo);
+        this.comboGrupo.setAdapter(adapterGrupo);
 
         comboComision = (Spinner)findViewById(R.id.comboComision);
         ArrayAdapter<CharSequence> adapterComision = ArrayAdapter.createFromResource(this, R.array.comisiones, android.R.layout.simple_spinner_item);
@@ -117,23 +117,23 @@ public class RegistrarActivity extends AppCompatActivity {
 
     private FormularioUsuario crearFormularioUsuario() {
         // Conversión de los datos en la GUI a variables para mandarlos
-        String env = comboEnv.getSelectedItem().toString().replaceAll("\n", "");
-        String name = txtNombre.getText().toString().replaceAll("\n", "");
-        String lastname = txtApellido.getText().toString().replaceAll("\n", "");
-        int dni = Integer.parseInt(txtDni.getText().toString());
-        String email = txtEmail.getText().toString().replaceAll("\n", "");
-        String password = txtContrasenia.getText().toString().replaceAll("\n", "");
-        int comission = Integer.parseInt(comboComision.getSelectedItem().toString());
-        int group = Integer.parseInt(comboGrupo.getSelectedItem().toString());
+        String env = this.comboEnv.getSelectedItem().toString().replaceAll("\n", "");
+        String name = this.txtNombre.getText().toString().replaceAll("\n", "");
+        String lastname = this.txtApellido.getText().toString().replaceAll("\n", "");
+        int dni = Integer.parseInt(this.txtDni.getText().toString());
+        String email = this.txtEmail.getText().toString().replaceAll("\n", "");
+        String password = this.txtContrasenia.getText().toString().replaceAll("\n", "");
+        int comission = Integer.parseInt(this.comboComision.getSelectedItem().toString());
+        int group = Integer.parseInt(this.comboGrupo.getSelectedItem().toString());
 
         return new FormularioUsuario(env, name, lastname, dni, email, password, comission, group);
     }
 
     private boolean ningunaEntradaVacia() {
-       if (txtNombre.getText().length() > 0 && txtApellido.getText().length() > 0 && txtDni.getText().length() > 0
-            && txtContrasenia.getText().length() > 0 && txtEmail.getText().length() > 0
-               && comboEnv.getSelectedItem() != null && comboGrupo.getSelectedItem() != null
-               && comboComision.getSelectedItem() != null ) {
+       if (this.txtNombre.getText().length() > 0 && this.txtApellido.getText().length() > 0 && this.txtDni.getText().length() > 0
+            && this.txtContrasenia.getText().length() > 0 && this.txtEmail.getText().length() > 0
+               && this.comboEnv.getSelectedItem() != null && this.comboGrupo.getSelectedItem() != null
+               && this.comboComision.getSelectedItem() != null ) {
             return true;
        }
         return false;
