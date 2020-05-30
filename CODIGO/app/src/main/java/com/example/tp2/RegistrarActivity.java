@@ -59,12 +59,14 @@ public class RegistrarActivity extends AppCompatActivity {
         if( !ningunaEntradaVacia()) {
             enviarMensaje("Falta completar algún campo");
         }
-        String env = comboEnv.getSelectedItem().toString();
-        String name = txtNombre.getText().toString();
-        String lastname = txtApellido.getText().toString();
+
+        // Conversión de los datos en la GUI a variables para mandarlos
+        String env = comboEnv.getSelectedItem().toString().replaceAll("\n", "");
+        String name = txtNombre.getText().toString().replaceAll("\n", "");
+        String lastname = txtApellido.getText().toString().replaceAll("\n", "");
         int dni = Integer.parseInt(txtDni.getText().toString());
-        String email = txtEmail.getText().toString();
-        String password = txtContrasenia.getText().toString();
+        String email = txtEmail.getText().toString().replaceAll("\n", "");
+        String password = txtContrasenia.getText().toString().replaceAll("\n", "");
         int comission = Integer.parseInt(comboComision.getSelectedItem().toString());
         int group = Integer.parseInt(comboGrupo.getSelectedItem().toString());
 
