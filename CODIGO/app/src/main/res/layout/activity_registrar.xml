@@ -353,11 +353,10 @@
         app:layout_constraintTop_toTopOf="@+id/guideline37" />
 
     <Button
-        android:id="@+id/buttonAceptar"
+        android:id="@+id/buttonRegistrar"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:onClick="registrar"
-        android:text="Aceptar"
+        android:text="Registrar"
         app:layout_constraintBottom_toTopOf="@+id/guideline31"
         app:layout_constraintEnd_toStartOf="@+id/guideline26"
         app:layout_constraintStart_toStartOf="@+id/guideline24"
@@ -367,7 +366,6 @@
         android:id="@+id/buttonVolver"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:onClick="volver"
         android:text="Volver"
         app:layout_constraintBottom_toTopOf="@+id/guideline31"
         app:layout_constraintEnd_toStartOf="@+id/guideline45"

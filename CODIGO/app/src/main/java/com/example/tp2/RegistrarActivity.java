@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -22,6 +23,8 @@ public class RegistrarActivity extends AppCompatActivity {
     private EditText txtDni;
     private EditText txtContrasenia;
     private EditText txtEmail;
+    private Button buttonVovler;
+    private Button buttonRegistrar;
     private ControladorUsuario controladorUsuario;
 
     @Override
@@ -46,15 +49,33 @@ public class RegistrarActivity extends AppCompatActivity {
         txtDni = findViewById(R.id.numberDni);
         txtContrasenia = findViewById(R.id.txtContrasenia);
         txtEmail = findViewById(R.id.txtEmail);
+        buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
+        buttonVovler = (Button)findViewById(R.id.buttonVolver);
 
         this.controladorUsuario = new ControladorUsuario();
+
+        buttonVovler.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                volver();
+            }
+        });
+
+        buttonRegistrar.setOnClickListener(new View.OnClickListener(){
+
+            @Override
+            public void onClick(View v) {
+                registrar();
+            }
+        });
     }
 
-    public void volver(View view){
+    public void volver(){
         finish();
     }
 
-    public  void registrar(View view) {
+    public  void registrar() {
 
         if( !ningunaEntradaVacia()) {
             enviarMensaje("Falta completar algún campo");

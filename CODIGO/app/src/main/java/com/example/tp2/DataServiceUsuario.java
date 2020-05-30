@@ -7,9 +7,11 @@ import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLEncoder;
 
 public class DataServiceUsuario {
 
@@ -19,7 +21,7 @@ public class DataServiceUsuario {
     public DataServiceUsuario() {
     }
 
-    public Usuario registrarUsuario(FormularioUsuario fu) throws EnvException, PassException, IOException{
+    public Usuario registrarUsuario(FormularioUsuario fu) throws EnvException, PassException{// throws EnvException, PassException, IOException{
         // Validaciones necesarias
         if(!fu.getEnv().equals("TEST") && !fu.getEnv().equals("DEV")){
             throw new EnvException("El ambiente no se especifico correctamente, espeficado: " + fu.getEnv());
@@ -32,35 +34,52 @@ public class DataServiceUsuario {
         Gson json = new Gson();
         String usuarioString = json.toJson(fu);
 
-        // Creo la conexión.
-        URL url = new URL(URI_REGISTRO);
+        //Defino variables que voy a usar
+        URL url = null;
+        HttpURLConnection con = null;
 
-        // Configuro la conexión.
-        HttpURLConnection con = (HttpURLConnection) url.openConnection();
-        con.setRequestProperty("Content-type","application/json");
-        con.setDoOutput(true);
-        con.setDoInput(true);
-        con.setRequestMethod("POST");
+        try {
+            // Creo la conexión.
+            url = new URL(URI_REGISTRO);
 
-        // Realizo la conexion
-        con.connect();
+            // Configuro la conexión.
+            con = (HttpURLConnection) url.openConnection();
+            con.setRequestProperty("content-type","application/json");
+            con.setDoOutput(true);
+            con.setDoInput(true);
+            con.setConnectTimeout(5000);
+            con.setRequestMethod("POST");
 
-        // Creo el flujo de datos
-        DataOutputStream out = new DataOutputStream(con.getOutputStream());
-        out.writeBytes(URLEncoder.encode(usuarioString, "UTF-8"));
-        out.flush();
-        out.close();
+            // Realizo la conexion
+            con.connect();
 
-        // Recibo la información
-        int res = con.getResponseCode();
-        if(res == HttpURLConnection.HTTP_OK) {
-            BufferedReader br = new BufferedReader( new InputStreamReader(con.getInputStream()));
-            String line;
-            while ((line = br.readLine()) != null){
-                System.out.println(line);
+            // Creo el flujo de datos
+            DataOutputStream out = new DataOutputStream(con.getOutputStream());
+            out.write(usuarioString.getBytes("UTF-8"));
+            out.flush();
+            out.close();
+
+            // Recibo la información
+            int res = con.getResponseCode();
+            if(res == HttpURLConnection.HTTP_OK) {
+                BufferedReader br = new BufferedReader( new InputStreamReader(con.getInputStream()));
+                String line;
+                while ((line = br.readLine()) != null){
+                    System.out.println(line);
+                }
+                br.close();
             }
-            br.close();
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
 
         // Por ultimo cierro la conexión
         if(con != null) {
