@@ -3,6 +3,7 @@ package com.example.tp2;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,8 +18,17 @@ import java.io.IOException;
 
 public class RegistrarActivity extends AppCompatActivity {
 
-    private static String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
-    private static String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
+    // Constantes
+    private final String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
+    private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
+    private final String ACCION_REGISTRAR = "com.example.tp2.ACCION_REGISTRAR";
+
+    // Variables para la comunicacion con el service
+    public IntentFilter filtro;
+    private ReceptorOperacion receiver = new ReceptorOperacion();
+    private Intent intent;
+
+    // Objetos de la GUI
     private Spinner comboGrupo;
     private Spinner comboComision;
     private Spinner comboEnv;
@@ -89,12 +99,20 @@ public class RegistrarActivity extends AppCompatActivity {
         String jsonUsuario = json.toJson(fu);
 
         // Armo el intent y se lo mando al usuario
-        Intent intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
-        intent.putExtra("json", jsonUsuario);
-        intent.putExtra("uri", URI_REGISTRO);
-        startService(intent);
+        this.intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
+        this.intent.putExtra("json", jsonUsuario);
+        this.intent.putExtra("uri", URI_REGISTRO);
+        this.intent.putExtra("accion", ACCION_REGISTRAR);
+        startService(this.intent);
 
+        // Configuro el boradcast para poder recibir el resultado de service
+        configurarBroadcastReciever();
+    }
 
+    private void configurarBroadcastReciever() {
+        this.filtro = new IntentFilter(ACCION_REGISTRAR);
+        this.filtro.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(this.receiver, this.filtro);
     }
 
     private FormularioUsuario crearFormularioUsuario() {
@@ -124,5 +142,10 @@ public class RegistrarActivity extends AppCompatActivity {
     private void enviarMensaje(String msj) {
         Toast toast = Toast.makeText(this, msj, Toast.LENGTH_LONG);
         toast.show();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        stopService(this.intent);
     }
 }
