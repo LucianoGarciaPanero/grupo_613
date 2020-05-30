@@ -1,16 +1,16 @@
 package com.example.tp2;
 
 
+
+import android.content.Intent;
+
 import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 public class DataServiceUsuario {
@@ -21,7 +21,7 @@ public class DataServiceUsuario {
     public DataServiceUsuario() {
     }
 
-    public Usuario registrarUsuario(FormularioUsuario fu) throws EnvException, PassException{// throws EnvException, PassException, IOException{
+    public Usuario registrarUsuario(FormularioUsuario fu) throws EnvException, PassException, IOException{
         // Validaciones necesarias
         if(!fu.getEnv().equals("TEST") && !fu.getEnv().equals("DEV")){
             throw new EnvException("El ambiente no se especifico correctamente, espeficado: " + fu.getEnv());
@@ -34,52 +34,42 @@ public class DataServiceUsuario {
         Gson json = new Gson();
         String usuarioString = json.toJson(fu);
 
-        //Defino variables que voy a usar
-        URL url = null;
-        HttpURLConnection con = null;
+        // Armo el intent para mandarlo ServicePostUsuario
+        Intent intent = new Intent(RegistrarActivity.class, ServicePostUsuario.class);
+        intent.putExtra("json", usuarioString);
+        intent.putExtra("uri", URI_REGISTRO);
 
-        try {
-            // Creo la conexión.
-            url = new URL(URI_REGISTRO);
 
-            // Configuro la conexión.
-            con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("content-type","application/json");
-            con.setDoOutput(true);
-            con.setDoInput(true);
-            con.setConnectTimeout(5000);
-            con.setRequestMethod("POST");
+        // Creo la conexión.
+         URL url = new URL(URI_REGISTRO);
 
-            // Realizo la conexion
-            con.connect();
+         // Configuro la conexión.
+        HttpURLConnection  con = (HttpURLConnection) url.openConnection();
+        con.setRequestProperty("content-type","application/json");
+        con.setDoOutput(true);
+        con.setDoInput(true);
+        con.setConnectTimeout(5000);
+        con.setRequestMethod("POST");
 
-            // Creo el flujo de datos
-            DataOutputStream out = new DataOutputStream(con.getOutputStream());
-            out.write(usuarioString.getBytes("UTF-8"));
-            out.flush();
-            out.close();
+        // Realizo la conexion
+        con.connect();
 
-            // Recibo la información
-            int res = con.getResponseCode();
-            if(res == HttpURLConnection.HTTP_OK) {
-                BufferedReader br = new BufferedReader( new InputStreamReader(con.getInputStream()));
-                String line;
-                while ((line = br.readLine()) != null){
-                    System.out.println(line);
-                }
-                br.close();
+        // Creo el flujo de datos
+        DataOutputStream out = new DataOutputStream(con.getOutputStream());
+        out.write(usuarioString.getBytes("UTF-8"));
+        out.flush();
+        out.close();
+
+        // Recibo la información
+        int res = con.getResponseCode();
+        if(res == HttpURLConnection.HTTP_OK) {
+            BufferedReader br = new BufferedReader( new InputStreamReader(con.getInputStream()));
+            String line;
+            while ((line = br.readLine()) != null){
+                System.out.println(line);
             }
-
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        } catch (ProtocolException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            br.close();
         }
-
 
         // Por ultimo cierro la conexión
         if(con != null) {

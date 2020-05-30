@@ -11,10 +11,14 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+
 import java.io.IOException;
 
 public class RegistrarActivity extends AppCompatActivity {
 
+    private static String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
+    private static String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
     private Spinner comboGrupo;
     private Spinner comboComision;
     private Spinner comboEnv;
@@ -25,7 +29,6 @@ public class RegistrarActivity extends AppCompatActivity {
     private EditText txtEmail;
     private Button buttonVovler;
     private Button buttonRegistrar;
-    private ControladorUsuario controladorUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,8 +55,6 @@ public class RegistrarActivity extends AppCompatActivity {
         buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
         buttonVovler = (Button)findViewById(R.id.buttonVolver);
 
-        this.controladorUsuario = new ControladorUsuario();
-
         buttonVovler.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -79,8 +80,24 @@ public class RegistrarActivity extends AppCompatActivity {
 
         if( !ningunaEntradaVacia()) {
             enviarMensaje("Falta completar algún campo");
+            return;
         }
 
+        // Creo el json que se manda al service
+        FormularioUsuario fu = crearFormularioUsuario();
+        Gson json = new Gson();
+        String jsonUsuario = json.toJson(fu);
+
+        // Armo el intent y se lo mando al usuario
+        Intent intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
+        intent.putExtra("json", jsonUsuario);
+        intent.putExtra("uri", URI_REGISTRO);
+        startService(intent);
+
+
+    }
+
+    private FormularioUsuario crearFormularioUsuario() {
         // Conversión de los datos en la GUI a variables para mandarlos
         String env = comboEnv.getSelectedItem().toString().replaceAll("\n", "");
         String name = txtNombre.getText().toString().replaceAll("\n", "");
@@ -91,15 +108,7 @@ public class RegistrarActivity extends AppCompatActivity {
         int comission = Integer.parseInt(comboComision.getSelectedItem().toString());
         int group = Integer.parseInt(comboGrupo.getSelectedItem().toString());
 
-        try {
-            controladorUsuario.registrarUsuario(env, name, lastname, dni, email, password, comission, group);
-        } catch (EnvException e) {
-            enviarMensaje("Error de enviroment: " + e.getMessage());
-        } catch (PassException e) {
-            enviarMensaje("Error de contraseña : " + e.getMessage());
-        } catch (IOException e) {
-            enviarMensaje("Error: " + e.getMessage());
-        }
+        return new FormularioUsuario(env, name, lastname, dni, email, password, comission, group);
     }
 
     private boolean ningunaEntradaVacia() {
