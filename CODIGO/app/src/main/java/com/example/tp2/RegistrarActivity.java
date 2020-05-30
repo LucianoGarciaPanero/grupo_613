@@ -14,8 +14,6 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-import java.io.IOException;
-
 public class RegistrarActivity extends AppCompatActivity {
 
     // Constantes
@@ -25,7 +23,7 @@ public class RegistrarActivity extends AppCompatActivity {
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;
-    private ReceptorOperacion receiver = new ReceptorOperacion();
+    private ReceptorRegistrar receiver = new ReceptorRegistrar();
     private Intent intent;
 
     // Objetos de la GUI
@@ -103,10 +101,12 @@ public class RegistrarActivity extends AppCompatActivity {
         this.intent.putExtra("json", jsonUsuario);
         this.intent.putExtra("uri", URI_REGISTRO);
         this.intent.putExtra("accion", ACCION_REGISTRAR);
-        startService(this.intent);
 
         // Configuro el boradcast para poder recibir el resultado de service
         configurarBroadcastReciever();
+
+        // Inicio servicio
+        startService(this.intent);
     }
 
     private void configurarBroadcastReciever() {

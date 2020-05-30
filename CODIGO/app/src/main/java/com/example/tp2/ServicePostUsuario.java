@@ -20,7 +20,7 @@ Este servicio se registra en segundo plano, es el que se comunica con el WebServ
 
 public class ServicePostUsuario extends IntentService {
 
-    private final String ERROR = "ERROR";
+    public final static String ERROR = "ERROR";
 
     public ServicePostUsuario(String name) {
         super("ServicePostUsuario");
@@ -38,15 +38,9 @@ public class ServicePostUsuario extends IntentService {
         // Ejecuto el POST
         String resultado = post(uri,json);
 
-        // Si el resultado es el bueno, devuelvo lo que me llega
+        // Devuelvo lo que llega
         Intent intentPost = new Intent(accion);
-
-        if(resultado.equals(ERROR)) {
-            intentPost.putExtra("json",ERROR);
-        } else {
-            intentPost.putExtra("json",resultado);
-        }
-
+        intentPost.putExtra("json",resultado);
         sendBroadcast(intentPost);
     }
 
@@ -80,7 +74,7 @@ public class ServicePostUsuario extends IntentService {
 
             // Recibo el coidgo de respuesta
             int codR = con.getResponseCode();
-            if (codR == HttpURLConnection.HTTP_OK) {
+            if (codR == HttpURLConnection.HTTP_OK || codR == HttpURLConnection.HTTP_CREATED) {
                 resultado = convertirInputStreamToString(new InputStreamReader(con.getInputStream()));
             } else {
                 resultado = ERROR;
