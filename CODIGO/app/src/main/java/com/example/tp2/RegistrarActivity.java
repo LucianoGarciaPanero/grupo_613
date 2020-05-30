@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.Spinner;
 
 public class RegistrarActivity extends AppCompatActivity {
@@ -13,6 +14,10 @@ public class RegistrarActivity extends AppCompatActivity {
     private Spinner comboGrupo;
     private Spinner comboComision;
     private Spinner comboEnv;
+    private EditText txtNombre;
+    private EditText txtApellido;
+    private EditText txtDni;
+    private EditText txtContrasenia;
     private ControladorUsuario controladorUsuario;
 
     @Override
@@ -32,6 +37,11 @@ public class RegistrarActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapterEnv = ArrayAdapter.createFromResource(this, R.array.envs, android.R.layout.simple_spinner_item);
         comboEnv.setAdapter(adapterEnv);
 
+        txtNombre = findViewById(R.id.txtNombre);
+        txtApellido = findViewById(R.id.txtApellido);
+        txtDni = findViewById(R.id.txtDni);
+        txtContrasenia = findViewById(R.id.txtContrasenia);
+
         this.controladorUsuario = new ControladorUsuario();
     }
 
@@ -41,6 +51,13 @@ public class RegistrarActivity extends AppCompatActivity {
 
     public  void registrar(View view) {
 
+        if( !ningunaEntradaVacia())
+
         controladorUsuario.registrarUsuario();
+    }
+
+    private boolean ningunaEntradaVacia() {
+        if(txtNombre.getText().length() > 0 && txtApellido.getText().length() > 0 && txtDni.getText().length() > 0
+                && txtContrasenia.getText().length() > 0)
     }
 }
