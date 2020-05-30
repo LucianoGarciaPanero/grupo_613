@@ -8,6 +8,9 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import java.io.IOException;
 
 public class RegistrarActivity extends AppCompatActivity {
 
@@ -18,6 +21,7 @@ public class RegistrarActivity extends AppCompatActivity {
     private EditText txtApellido;
     private EditText txtDni;
     private EditText txtContrasenia;
+    private EditText txtEmail;
     private ControladorUsuario controladorUsuario;
 
     @Override
@@ -39,8 +43,9 @@ public class RegistrarActivity extends AppCompatActivity {
 
         txtNombre = findViewById(R.id.txtNombre);
         txtApellido = findViewById(R.id.txtApellido);
-        txtDni = findViewById(R.id.txtDni);
+        txtDni = findViewById(R.id.numberDni);
         txtContrasenia = findViewById(R.id.txtContrasenia);
+        txtEmail = findViewById(R.id.txtEmail);
 
         this.controladorUsuario = new ControladorUsuario();
     }
@@ -51,13 +56,41 @@ public class RegistrarActivity extends AppCompatActivity {
 
     public  void registrar(View view) {
 
-        if( !ningunaEntradaVacia())
+        if( !ningunaEntradaVacia()) {
+            enviarMensaje("Falta completar algún campo");
+        }
+        String env = comboEnv.getSelectedItem().toString();
+        String name = txtNombre.getText().toString();
+        String lastname = txtApellido.getText().toString();
+        int dni = Integer.parseInt(txtDni.getText().toString());
+        String email = txtEmail.getText().toString();
+        String password = txtContrasenia.getText().toString();
+        int comission = Integer.parseInt(comboComision.getSelectedItem().toString());
+        int group = Integer.parseInt(comboGrupo.getSelectedItem().toString());
 
-        controladorUsuario.registrarUsuario();
+        try {
+            controladorUsuario.registrarUsuario(env, name, lastname, dni, email, password, comission, group);
+        } catch (EnvException e) {
+            enviarMensaje("Error de enviroment: " + e.getMessage());
+        } catch (PassException e) {
+            enviarMensaje("Error de contraseña : " + e.getMessage());
+        } catch (IOException e) {
+            enviarMensaje("Error: " + e.getMessage());
+        }
     }
 
     private boolean ningunaEntradaVacia() {
-        if(txtNombre.getText().length() > 0 && txtApellido.getText().length() > 0 && txtDni.getText().length() > 0
-                && txtContrasenia.getText().length() > 0)
+       if (txtNombre.getText().length() > 0 && txtApellido.getText().length() > 0 && txtDni.getText().length() > 0
+            && txtContrasenia.getText().length() > 0 && txtEmail.getText().length() > 0
+               && comboEnv.getSelectedItem() != null && comboGrupo.getSelectedItem() != null
+               && comboComision.getSelectedItem() != null ) {
+            return true;
+       }
+        return false;
+    }
+
+    private void enviarMensaje(String msj) {
+        Toast toast = Toast.makeText(this, msj, Toast.LENGTH_LONG);
+        toast.show();
     }
 }
