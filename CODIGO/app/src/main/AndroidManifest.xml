@@ -19,5 +19,5 @@
         </activity>
         <service android:name=".ServicePostUsuario"></service>
     </application>
-
+    <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
