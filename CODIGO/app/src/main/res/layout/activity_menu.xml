@@ -12,11 +12,10 @@
         android:layout_height="wrap_content"
         android:text="Ver ultimo resultado"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.608"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/guideline47"
+        app:layout_constraintStart_toStartOf="@+id/guideline46"
         app:layout_constraintTop_toTopOf="@+id/guideline49"
-        app:layout_constraintVertical_bias="0.275" />
+        app:layout_constraintVertical_bias="0.27" />
 
     <Button
         android:id="@+id/buttonMejorResultado"
@@ -24,8 +23,8 @@
         android:layout_height="wrap_content"
         android:text="Ver mejor resultado"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/buttonUltimoResultado"
-        app:layout_constraintStart_toStartOf="@+id/buttonUltimoResultado"
+        app:layout_constraintEnd_toStartOf="@+id/guideline47"
+        app:layout_constraintStart_toStartOf="@+id/guideline46"
         app:layout_constraintTop_toBottomOf="@+id/buttonUltimoResultado"
         app:layout_constraintVertical_bias="0.1" />
 
