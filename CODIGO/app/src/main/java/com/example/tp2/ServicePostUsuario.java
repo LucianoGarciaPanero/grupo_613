@@ -22,8 +22,13 @@ public class ServicePostUsuario extends IntentService {
 
     public final static String ERROR = "ERROR";
 
-    public ServicePostUsuario(String name) {
+    public ServicePostUsuario() {
         super("ServicePostUsuario");
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
     }
 
     @Override
@@ -39,7 +44,8 @@ public class ServicePostUsuario extends IntentService {
         String resultado = post(uri,json);
 
         // Devuelvo lo que llega
-        Intent intentPost = new Intent(accion);
+        Intent intentPost = new Intent();
+        intentPost.setAction(accion);
         intentPost.putExtra("json",resultado);
         sendBroadcast(intentPost);
     }

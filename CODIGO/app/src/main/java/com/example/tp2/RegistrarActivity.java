@@ -2,6 +2,8 @@ package com.example.tp2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -19,7 +21,7 @@ public class RegistrarActivity extends AppCompatActivity {
     // Constantes
     private final String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
     private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
-    private final String ACCION_REGISTRAR = "com.example.tp2.ACCION_REGISTRAR";
+    private final String ACCION_REGISTRAR = "com.example.tp2.intent.action.ACCION_REGISTRAR";
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;
@@ -110,7 +112,8 @@ public class RegistrarActivity extends AppCompatActivity {
     }
 
     private void configurarBroadcastReciever() {
-        this.filtro = new IntentFilter(ACCION_REGISTRAR);
+        this.filtro = new IntentFilter();
+        this.filtro.addAction(ACCION_REGISTRAR);
         this.filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(this.receiver, this.filtro);
     }
@@ -147,5 +150,26 @@ public class RegistrarActivity extends AppCompatActivity {
     public void onDestroy() {
         super.onDestroy();
         stopService(this.intent);
+    }
+
+    public class ReceptorRegistrar extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Gson gson = new Gson();
+            RespuestaServicioRegistrar respuesta;
+            String json = intent.getStringExtra("json");
+            if(json.equals(ServicePostUsuario.ERROR)) {
+                Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(context.getApplicationContext(), "Exito", Toast.LENGTH_LONG).show();
+            }
+            /*
+            respuesta = gson.fromJson(json, RespuestaServicioRegistrar.class);
+            if(respuesta.getState().equals("success")) {
+                Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
+                System.out.println(respuesta.toString());
+            }*/
+        }
     }
 }
