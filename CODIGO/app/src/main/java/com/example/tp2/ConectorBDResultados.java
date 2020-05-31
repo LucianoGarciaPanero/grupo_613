@@ -1,10 +1,27 @@
 package com.example.tp2;
 
+import android.content.SharedPreferences;
+
 public class ConectorBDResultados {
     // Constante
-    private final String NOMBRE_BD = "MisResultados";
+    public static final String NOMBRE_BD = "MisResultados";
 
-    public ConectorBDResultados() {
+    private SharedPreferences preference;
+
+    public ConectorBDResultados(SharedPreferences preference) {
+        this.preference = preference;
+    }
+
+    public void guardarResultado(Resultado resultado){
+
+    }
+
+    public Resultado obtenerUltimoResultado(){
+        return null;
+    }
+
+    public Resultado obtenerMejorResultado(){
+        return null;
     }
 
 

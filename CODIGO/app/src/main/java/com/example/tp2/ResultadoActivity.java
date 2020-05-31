@@ -2,6 +2,7 @@ package com.example.tp2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -15,14 +16,15 @@ public class ResultadoActivity extends AppCompatActivity {
     private Button buttonVolver;
 
     private String accion;
+    private ConectorBDResultados connector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resultado);
 
-        this.labelTipoResultado = (TextView)findViewById(R.id.labelTipoResultado);
-        this.buttonVolver = (Button)findViewById(R.id.buttonVolver);
+        this.labelTipoResultado = findViewById(R.id.labelTipoResultado);
+        this.buttonVolver = findViewById(R.id.buttonVolver);
 
         this.buttonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,5 +39,7 @@ public class ResultadoActivity extends AppCompatActivity {
         } else {
             this.labelTipoResultado.setText("Este es el ultimo resultado obtenido");
         }
+
+        this.connector = new ConectorBDResultados(getSharedPreferences(ConectorBDResultados.NOMBRE_BD, Context.MODE_PRIVATE));
     }
 }
