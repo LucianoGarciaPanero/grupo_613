@@ -22,8 +22,6 @@ public class RegistrarActivity extends AppCompatActivity {
     private final String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
     private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
     private final String ACCION_REGISTRAR = "com.example.tp2.intent.action.ACCION_REGISTRAR";
-    // Esta variable es para que podamos cambiar de entorno facilmente
-    private  final String ENV = "TEST"; // ENV = ["TEST"/"DEV"]
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;
@@ -40,6 +38,9 @@ public class RegistrarActivity extends AppCompatActivity {
     private EditText txtEmail;
     private Button buttonVovler;
     private Button buttonRegistrar;
+
+    // Clase para validar entrada
+    private ValidadorCampos vc;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,19 +78,21 @@ public class RegistrarActivity extends AppCompatActivity {
                 registrar();
             }
         });
+
+        vc = new ValidadorCampos();
     }
 
-    public void volver(){
+    private void volver(){
         finish();
     }
 
-    public  void registrar() {
+    private void registrar() {
 
         if( !ningunaEntradaVacia()) {
             return;
         }
 
-        if(!camposCorrectos()){
+        if(!vc.camposCorrectos(this, txtContrasenia.getText().toString(), txtEmail.getText().toString())){
             return;
         }
 
@@ -127,7 +130,7 @@ public class RegistrarActivity extends AppCompatActivity {
         int comission = Integer.parseInt(this.comboComision.getSelectedItem().toString());
         int group = Integer.parseInt(this.comboGrupo.getSelectedItem().toString());
 
-        return new FormularioUsuario(this.ENV, name, lastname, dni, email, password, comission, group);
+        return new FormularioUsuario(MainActivity.ENV, name, lastname, dni, email, password, comission, group);
     }
 
     /*
@@ -142,26 +145,6 @@ public class RegistrarActivity extends AppCompatActivity {
        }
         enviarMensaje("Falta completar algún campo");
         return false;
-    }
-
-    /*
-    Solo revisa de que la contraseña y el email esten correctamente completados.
-     */
-
-    private boolean camposCorrectos() {
-        if(this.txtContrasenia.getText().length() <= 7){
-            enviarMensaje("La contraseña debe tener al menos 8 caracteres");
-            return false;
-        }
-        if(!this.txtEmail.getText().toString().contains("@")){
-            enviarMensaje("Se debe especificar un email");
-            return false;
-        }
-        if(!this.txtEmail.getText().toString().contains(".com") && !this.txtEmail.getText().toString().contains(".ar")) {
-            enviarMensaje("Se debe especificar un email");
-            return false;
-        }
-        return true;
     }
 
     private void enviarMensaje(String msj) {
