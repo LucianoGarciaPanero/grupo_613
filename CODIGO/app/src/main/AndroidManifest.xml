@@ -17,7 +17,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <receiver android:name=".RegistrarActivity$ReceptorRegistrar"></receiver>
         <service android:name=".ServicePostUsuario"></service>
     </application>
+
     <uses-permission android:name="android.permission.INTERNET" />
 </manifest>
