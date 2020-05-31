@@ -63,7 +63,7 @@ public class ServicePostUsuario extends IntentService {
 
             // Configuro la conexión.
             con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("Content-type", "application/json; charset = UTF-8");
+            con.setRequestProperty("Content-Type", "application/json; charset = UTF-8");
             con.setDoOutput(true);
             con.setDoInput(true);
             con.setRequestMethod("POST");

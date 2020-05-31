@@ -22,6 +22,8 @@ public class RegistrarActivity extends AppCompatActivity {
     private final String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
     private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
     private final String ACCION_REGISTRAR = "com.example.tp2.intent.action.ACCION_REGISTRAR";
+    // Esta variable es para que podamos cambiar de entorno facilmente
+    private  final String ENV = "TEST";
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;
@@ -31,7 +33,6 @@ public class RegistrarActivity extends AppCompatActivity {
     // Objetos de la GUI
     private Spinner comboGrupo;
     private Spinner comboComision;
-    private Spinner comboEnv;
     private EditText txtNombre;
     private EditText txtApellido;
     private EditText txtDni;
@@ -52,10 +53,6 @@ public class RegistrarActivity extends AppCompatActivity {
         comboComision = (Spinner)findViewById(R.id.comboComision);
         ArrayAdapter<CharSequence> adapterComision = ArrayAdapter.createFromResource(this, R.array.comisiones, android.R.layout.simple_spinner_item);
         comboComision.setAdapter(adapterComision);
-
-        comboEnv = (Spinner)findViewById(R.id.comboEnv);
-        ArrayAdapter<CharSequence> adapterEnv = ArrayAdapter.createFromResource(this, R.array.envs, android.R.layout.simple_spinner_item);
-        comboEnv.setAdapter(adapterEnv);
 
         txtNombre = findViewById(R.id.txtNombre);
         txtApellido = findViewById(R.id.txtApellido);
@@ -97,7 +94,7 @@ public class RegistrarActivity extends AppCompatActivity {
         FormularioUsuario fu = crearFormularioUsuario();
         Gson json = new Gson();
         String jsonUsuario = json.toJson(fu);
-
+        Toast.makeText(this, jsonUsuario, Toast.LENGTH_LONG).show();
         // Armo el intent y se lo mando al usuario
         this.intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
@@ -120,7 +117,6 @@ public class RegistrarActivity extends AppCompatActivity {
 
     private FormularioUsuario crearFormularioUsuario() {
         // Conversión de los datos en la GUI a variables para mandarlos
-        String env = this.comboEnv.getSelectedItem().toString().replaceAll("\n", "");
         String name = this.txtNombre.getText().toString().replaceAll("\n", "");
         String lastname = this.txtApellido.getText().toString().replaceAll("\n", "");
         int dni = Integer.parseInt(this.txtDni.getText().toString());
@@ -129,14 +125,13 @@ public class RegistrarActivity extends AppCompatActivity {
         int comission = Integer.parseInt(this.comboComision.getSelectedItem().toString());
         int group = Integer.parseInt(this.comboGrupo.getSelectedItem().toString());
 
-        return new FormularioUsuario(env, name, lastname, dni, email, password, comission, group);
+        return new FormularioUsuario(this.ENV, name, lastname, dni, email, password, comission, group);
     }
 
     private boolean ningunaEntradaVacia() {
        if (this.txtNombre.getText().length() > 0 && this.txtApellido.getText().length() > 0 && this.txtDni.getText().length() > 0
             && this.txtContrasenia.getText().length() > 0 && this.txtEmail.getText().length() > 0
-               && this.comboEnv.getSelectedItem() != null && this.comboGrupo.getSelectedItem() != null
-               && this.comboComision.getSelectedItem() != null ) {
+               && this.comboGrupo.getSelectedItem() != null && this.comboComision.getSelectedItem() != null ) {
             return true;
        }
         return false;
