@@ -92,7 +92,7 @@ public class RegistrarActivity extends AppCompatActivity {
     }
 
     private void volver(){
-        Intent intentV = new Intent(RegistrarActivity.this, MainActivity.class);
+        Intent intentV = new Intent(RegistrarActivity.this, IniciarSesionActivity.class);
         startActivity(intentV);
         finish();
     }
@@ -117,7 +117,7 @@ public class RegistrarActivity extends AppCompatActivity {
         String jsonUsuario = json.toJson(fu);
 
         // Armo el intent y se lo mando al service
-        this.intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
+        this.intent = new Intent(RegistrarActivity.this, ServicioPostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
         this.intent.putExtra("uri", URI_REGISTRO);
         this.intent.putExtra("accion", ACCION_REGISTRAR);
@@ -146,7 +146,7 @@ public class RegistrarActivity extends AppCompatActivity {
         int comission = Integer.parseInt(this.comboComision.getSelectedItem().toString());
         int group = Integer.parseInt(this.comboGrupo.getSelectedItem().toString());
 
-        return new FormularioUsuario(MainActivity.ENV, name, lastname, dni, email, password, comission, group);
+        return new FormularioUsuario(IniciarSesionActivity.ENV, name, lastname, dni, email, password, comission, group);
     }
 
     /*
@@ -181,7 +181,7 @@ public class RegistrarActivity extends AppCompatActivity {
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
-            if(json.equals(ServicePostUsuario.ERROR)) {
+            if(json.equals(ServicioPostUsuario.ERROR)) {
                 Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -190,8 +190,9 @@ public class RegistrarActivity extends AppCompatActivity {
             respuestaServicioPost = gson.fromJson(json, RespuestaServicioPost.class);
             if(respuestaServicioPost.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
-                Intent intentM = new Intent(RegistrarActivity.this, MainActivity.class);
+                Intent intentM = new Intent(RegistrarActivity.this, MenuActivity.class);
                 intentM.putExtra("token", respuestaServicioPost.getToken());
+                startActivity(intentM);
                 finish();
             }
         }

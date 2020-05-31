@@ -18,12 +18,12 @@ import java.nio.Buffer;
 Este servicio se registra en segundo plano, es el que se comunica con el WebService para registrar al usuario.
  */
 
-public class ServicePostUsuario extends IntentService {
+public class ServicioPostUsuario extends IntentService {
 
     public final static String ERROR = "ERROR";
 
-    public ServicePostUsuario() {
-        super("ServicePostUsuario");
+    public ServicioPostUsuario() {
+        super("ServicioPostUsuario");
     }
 
     @Override

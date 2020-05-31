@@ -12,9 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MenuActivity"></activity>
+        <activity android:name=".ResultadoActivity"></activity>
+        <activity android:name=".MenuActivity" />
         <activity android:name=".RegistrarActivity" />
-        <activity android:name=".MainActivity">
+        <activity android:name=".IniciarSesionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,9 +24,9 @@
         </activity>
 
         <receiver android:name=".RegistrarActivity$ReceptorRegistrar" />
-        <receiver android:name=".MainActivity$ReceptorIniciarSesion" />
+        <receiver android:name=".IniciarSesionActivity$ReceptorIniciarSesion" />
 
-        <service android:name=".ServicePostUsuario" />
+        <service android:name=".ServicioPostUsuario" />
     </application>
 
 </manifest>

@@ -14,7 +14,7 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 
-public class MainActivity extends AppCompatActivity {
+public class IniciarSesionActivity extends AppCompatActivity {
 
     // Constantes
     private final String URI_INICIAR_SESION = "http://so-unlam.net.ar/api/api/login";
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        if(!this.validadorConexionInternet.estaConectadoAInternet(MainActivity.this)){
+        if(!this.validadorConexionInternet.estaConectadoAInternet(IniciarSesionActivity.this)){
             return;
         }
 
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         String jsonUsuario = json.toJson(fu);
 
         //Armo el intent y se lo mando al service
-        this.intent = new Intent(MainActivity.this, ServicePostUsuario.class);
+        this.intent = new Intent(IniciarSesionActivity.this, ServicioPostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
         this.intent.putExtra("uri", this.URI_INICIAR_SESION);
         this.intent.putExtra("accion", this.ACCION_INICIAR_SESION);
@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
-            if(json.equals(ServicePostUsuario.ERROR)) {
+            if(json.equals(ServicioPostUsuario.ERROR)) {
                 Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
                 return;
             }
@@ -141,8 +141,9 @@ public class MainActivity extends AppCompatActivity {
             respuestaServicioPost = gson.fromJson(json, RespuestaServicioPost.class);
             if(respuestaServicioPost.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_LONG).show();
-                Intent intentM = new Intent(MainActivity.this, MainActivity.class);
+                Intent intentM = new Intent(IniciarSesionActivity.this, MenuActivity.class);
                 intentM.putExtra("token", respuestaServicioPost.getToken());
+                startActivity(intentM);
                 finish();
             }
         }
