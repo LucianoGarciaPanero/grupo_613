@@ -27,8 +27,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void iniciarRegistro() {
-        Intent intent = new Intent(MainActivity.this, RegistrarActivity.class);
-        startActivity(intent);
+       Intent intent = new Intent(MainActivity.this, RegistrarActivity.class);
+       startActivity(intent);
     }
 }
 
