@@ -17,25 +17,32 @@ import com.google.gson.Gson;
 public class MainActivity extends AppCompatActivity {
 
     // Constantes
-    private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
+    private final String URI_INICIAR_SESION = "http://so-unlam.net.ar/api/api/login";
     private final String ACCION_INICIAR_SESION = "com.example.tp2.intent.action.INICIAR_SESION";
     // Esta variable es para que podamos cambiar de entorno facilmente
     public static final String ENV = "TEST"; // ENV = ["TEST"/"DEV"]
-
-    // Clase para validar 
-    private ValidadorCampos validadorCampos;
-    private ValidadorConexionInternet validadorConexionInternet;
-
-    // Objetos de la GUI
-    private Button buttonRegistrar;
-    private Button buttonIngresar;
-    private EditText txtEmail;
-    private EditText txtContrasenia;
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;
     private ReceptorIniciarSesion receiver = new ReceptorIniciarSesion();
     private Intent intent;
+
+    // Objetos de la GUI
+    private EditText txtEmail;
+    private EditText txtContrasenia;
+    private Button buttonRegistrar;
+    private Button buttonIngresar;
+
+    // Clases para validar
+    private ValidadorCampos validadorCampos;
+    private ValidadorConexionInternet validadorConexionInternet;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopService(this.intent);
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,12 +73,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void iniciarRegistro() {
+        Intent intent = new Intent(this, RegistrarActivity.class);
+        startActivity(intent);
+    }
+
     private void iniciarSesion() {
         if(!this.validadorCampos.camposCorrectos(this, this.txtContrasenia.getText().toString(), this.txtEmail.getText().toString())) {
             return;
         }
 
-        if(!this.validadorConexionInternet.validarConexionInternet(MainActivity.this)){
+        if(!this.validadorConexionInternet.estaConectadoAInternet(MainActivity.this)){
             return;
         }
 
@@ -85,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
         //Armo el intent y se lo mando al service
         this.intent = new Intent(MainActivity.this, ServicePostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
-        this.intent.putExtra("uri", this.URI_LOGIN);
+        this.intent.putExtra("uri", this.URI_INICIAR_SESION);
         this.intent.putExtra("accion", this.ACCION_INICIAR_SESION);
 
         // Configuro el boradcast para poder recibir el resultado de service
@@ -104,16 +116,6 @@ public class MainActivity extends AppCompatActivity {
         registerReceiver(this.receiver, this.filtro);
     }
 
-    private void iniciarRegistro() {
-        Intent intent = new Intent(this, RegistrarActivity.class);
-        startActivity(intent);
-    }
-
-    public void onDestroy() {
-        super.onDestroy();
-        stopService(this.intent);
-    }
-
     public class ReceptorIniciarSesion extends BroadcastReceiver {
 
         public ReceptorIniciarSesion() {
@@ -123,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Recibo lo que me llega del intent
             Gson gson = new Gson();
-            RespuestaServicioRegistrar respuesta;
+            RespuestaServicioPost respuesta;
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Si no es un error lo transformo para poder analizarlo
-            respuesta = gson.fromJson(json, RespuestaServicioRegistrar.class);
+            respuesta = gson.fromJson(json, RespuestaServicioPost.class);
             if(respuesta.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_LONG).show();
                 // TODO: crea una nueva activity y le paso el json.

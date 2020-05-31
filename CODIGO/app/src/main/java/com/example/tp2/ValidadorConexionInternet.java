@@ -13,7 +13,7 @@ public class ValidadorConexionInternet {
 
     public ValidadorConexionInternet() {
     }
-    public boolean validarConexionInternet(Context context){
+    public boolean estaConectadoAInternet(Context context){
         ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
 

@@ -38,9 +38,15 @@ public class RegistrarActivity extends AppCompatActivity {
     private Button buttonVovler;
     private Button buttonRegistrar;
 
-    // Clase para validar
+    // Clases para validar
     private ValidadorCampos validadorCampos;
     private ValidadorConexionInternet validadorConexionInternet;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        stopService(this.intent);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,7 +103,7 @@ public class RegistrarActivity extends AppCompatActivity {
             return;
         }
 
-        if(!this.validadorConexionInternet.validarConexionInternet(RegistrarActivity.this)){
+        if(!this.validadorConexionInternet.estaConectadoAInternet(RegistrarActivity.this)){
             return;
         }
 
@@ -158,11 +164,6 @@ public class RegistrarActivity extends AppCompatActivity {
         toast.show();
     }
 
-    public void onDestroy() {
-        super.onDestroy();
-        stopService(this.intent);
-    }
-
     public class ReceptorRegistrar extends BroadcastReceiver {
 
         public ReceptorRegistrar() {
@@ -172,7 +173,7 @@ public class RegistrarActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Recibo lo que me llega del intent
             Gson gson = new Gson();
-            RespuestaServicioRegistrar respuesta;
+            RespuestaServicioPost respuesta;
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
@@ -182,7 +183,7 @@ public class RegistrarActivity extends AppCompatActivity {
             }
 
             // Si no es un error lo transformo para poder analizarlo
-            respuesta = gson.fromJson(json, RespuestaServicioRegistrar.class);
+            respuesta = gson.fromJson(json, RespuestaServicioPost.class);
             if(respuesta.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
                 // TODO: crea una nueva activity y le paso el json.
