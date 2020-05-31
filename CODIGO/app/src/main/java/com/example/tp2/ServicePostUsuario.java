@@ -63,14 +63,10 @@ public class ServicePostUsuario extends IntentService {
 
             // Configuro la conexión.
             con = (HttpURLConnection) url.openConnection();
-            con.setRequestProperty("content-type", "application/json");
+            con.setRequestProperty("Content-type", "application/json; charset = UTF-8");
             con.setDoOutput(true);
             con.setDoInput(true);
-            con.setConnectTimeout(5000);
             con.setRequestMethod("POST");
-
-            // Realizo la conexion
-            con.connect();
 
             // Creo el flujo de datos
             DataOutputStream out = new DataOutputStream(con.getOutputStream());
@@ -78,8 +74,13 @@ public class ServicePostUsuario extends IntentService {
             out.flush();
             out.close();
 
+            // Realizo la conexion
+            con.connect();
+
             // Recibo el coidgo de respuesta
             int codR = con.getResponseCode();
+
+            // Evaluo según el código de respuesta
             if (codR == HttpURLConnection.HTTP_OK || codR == HttpURLConnection.HTTP_CREATED) {
                 resultado = convertirInputStreamToString(new InputStreamReader(con.getInputStream()));
             } else {
