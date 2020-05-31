@@ -40,7 +40,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopService(this.intent);
+        if (this.intent != null) {
+            stopService(this.intent);
+        }
     }
 
 
@@ -74,8 +76,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void iniciarRegistro() {
-        Intent intent = new Intent(this, RegistrarActivity.class);
-        startActivity(intent);
+        Intent intentR = new Intent(this, RegistrarActivity.class);
+        startActivity(intentR);
+        finish();
     }
 
     private void iniciarSesion() {
@@ -125,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Recibo lo que me llega del intent
             Gson gson = new Gson();
-            RespuestaServicioPost respuesta;
+            RespuestaServicioPost respuestaServicioPost;
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
@@ -135,10 +138,12 @@ public class MainActivity extends AppCompatActivity {
             }
 
             // Si no es un error lo transformo para poder analizarlo
-            respuesta = gson.fromJson(json, RespuestaServicioPost.class);
-            if(respuesta.getState().equals("success")) {
+            respuestaServicioPost = gson.fromJson(json, RespuestaServicioPost.class);
+            if(respuestaServicioPost.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_LONG).show();
-                // TODO: crea una nueva activity y le paso el json.
+                Intent intentM = new Intent(MainActivity.this, MainActivity.class);
+                intentM.putExtra("token", respuestaServicioPost.getToken());
+                finish();
             }
         }
     }

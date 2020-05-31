@@ -45,7 +45,9 @@ public class RegistrarActivity extends AppCompatActivity {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        stopService(this.intent);
+        if(this.intent != null) {
+            stopService(this.intent);
+        }
     }
 
     @Override
@@ -90,6 +92,8 @@ public class RegistrarActivity extends AppCompatActivity {
     }
 
     private void volver(){
+        Intent intentV = new Intent(RegistrarActivity.this, MainActivity.class);
+        startActivity(intentV);
         finish();
     }
 
@@ -173,7 +177,7 @@ public class RegistrarActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Recibo lo que me llega del intent
             Gson gson = new Gson();
-            RespuestaServicioPost respuesta;
+            RespuestaServicioPost respuestaServicioPost;
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
@@ -183,10 +187,12 @@ public class RegistrarActivity extends AppCompatActivity {
             }
 
             // Si no es un error lo transformo para poder analizarlo
-            respuesta = gson.fromJson(json, RespuestaServicioPost.class);
-            if(respuesta.getState().equals("success")) {
+            respuestaServicioPost = gson.fromJson(json, RespuestaServicioPost.class);
+            if(respuestaServicioPost.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
-                // TODO: crea una nueva activity y le paso el json.
+                Intent intentM = new Intent(RegistrarActivity.this, MainActivity.class);
+                intentM.putExtra("token", respuestaServicioPost.getToken());
+                finish();
             }
         }
     }
