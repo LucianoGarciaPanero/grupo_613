@@ -86,7 +86,10 @@ public class RegistrarActivity extends AppCompatActivity {
     public  void registrar() {
 
         if( !ningunaEntradaVacia()) {
-            enviarMensaje("Falta completar algún campo");
+            return;
+        }
+
+        if(!camposCorrectos()){
             return;
         }
 
@@ -94,7 +97,6 @@ public class RegistrarActivity extends AppCompatActivity {
         FormularioUsuario fu = crearFormularioUsuario();
         Gson json = new Gson();
         String jsonUsuario = json.toJson(fu);
-        Toast.makeText(this, jsonUsuario, Toast.LENGTH_LONG).show();
         // Armo el intent y se lo mando al usuario
         this.intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
@@ -128,13 +130,38 @@ public class RegistrarActivity extends AppCompatActivity {
         return new FormularioUsuario(this.ENV, name, lastname, dni, email, password, comission, group);
     }
 
+    /*
+    Solo valida que no haya campos vacios
+     */
+
     private boolean ningunaEntradaVacia() {
        if (this.txtNombre.getText().length() > 0 && this.txtApellido.getText().length() > 0 && this.txtDni.getText().length() > 0
             && this.txtContrasenia.getText().length() > 0 && this.txtEmail.getText().length() > 0
                && this.comboGrupo.getSelectedItem() != null && this.comboComision.getSelectedItem() != null ) {
             return true;
        }
+        enviarMensaje("Falta completar algún campo");
         return false;
+    }
+
+    /*
+    Solo revisa de que la contraseña y el email esten correctamente completados.
+     */
+
+    private boolean camposCorrectos() {
+        if(this.txtContrasenia.getText().length() <= 7){
+            enviarMensaje("La contraseña debe tener al menos 8 caracteres");
+            return false;
+        }
+        if(!this.txtEmail.getText().toString().contains("@")){
+            enviarMensaje("Se debe especificar un email");
+            return false;
+        }
+        if(!this.txtEmail.getText().toString().contains(".com") && !this.txtEmail.getText().toString().contains(".ar")) {
+            enviarMensaje("Se debe especificar un email");
+            return false;
+        }
+        return true;
     }
 
     private void enviarMensaje(String msj) {
