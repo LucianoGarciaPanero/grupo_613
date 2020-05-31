@@ -16,13 +16,12 @@
             android:name=".Timer"
             android:exported="false">
         </service>
-        <service android:name=".ServicioPostUsuario"></service>
+        <service android:name=".ServicioPostUsuario" />
 
-
+        <activity android:name=".ResultadoActivity" />
         <activity android:name=".RegistroSensor" />
         <activity android:name=".RegistrarActivity" />
         <activity android:name=".MenuActivity" />
-        <activity android:name=".ResultadoActivity"></activity>
         <activity android:name=".IniciarSesionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
