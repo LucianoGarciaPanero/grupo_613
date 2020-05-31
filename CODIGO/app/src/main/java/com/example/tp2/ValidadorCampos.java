@@ -3,10 +3,11 @@ package com.example.tp2;
 import android.content.Context;
 import android.widget.Toast;
 
+/*
+Esta clase es para validar los campos de email y contrasenia. Esto es para evitar duplicar código en las activitys.
+ */
+
 public class ValidadorCampos {
-    /*
-    Esta clase es para validar los campos de email y contrasenia. Esto es para evitar duplicar código en las activitys.
-     */
 
     public ValidadorCampos() {
     }

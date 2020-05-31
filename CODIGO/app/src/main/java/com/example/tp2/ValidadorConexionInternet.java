@@ -5,20 +5,22 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.widget.Toast;
 
-import static androidx.core.content.ContextCompat.getSystemService;
+/*
+Esta clase es para validad que exista algun tipo de conexión a internet
+*/
 
 public class ValidadorConexionInternet {
 
     public ValidadorConexionInternet() {
     }
     public boolean validarConexionInternet(Context context){
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
 
         if( ni != null && ni.isConnected()) {
             return true;
         } else {
-            Toast.makeText(context, "No se esta conectado a internet", Toast.LENGTH_LONG).show();
+            Toast.makeText(context, "Error: no se esta conectado a internet", Toast.LENGTH_LONG).show();
             return false;
         }
     }

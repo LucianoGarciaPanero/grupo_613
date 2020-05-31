@@ -22,8 +22,9 @@ public class MainActivity extends AppCompatActivity {
     // Esta variable es para que podamos cambiar de entorno facilmente
     public static final String ENV = "TEST"; // ENV = ["TEST"/"DEV"]
 
-    // Clase para validar entrada
-    private ValidadorCampos vc;
+    // Clase para validar 
+    private ValidadorCampos validadorCampos;
+    private ValidadorConexionInternet validadorConexionInternet;
 
     // Objetos de la GUI
     private Button buttonRegistrar;
@@ -41,18 +42,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
-        buttonIngresar = (Button)findViewById(R.id.buttonIngresar);
-        txtEmail = findViewById(R.id.txtEmail);
-        txtContrasenia = findViewById(R.id.txtContrasenia);
+        this.buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
+        this.buttonIngresar = (Button)findViewById(R.id.buttonIngresar);
+        this.txtEmail = findViewById(R.id.txtEmail);
+        this.txtContrasenia = findViewById(R.id.txtContrasenia);
 
-        buttonRegistrar.setOnClickListener(new View.OnClickListener() {
+        this.buttonRegistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 iniciarRegistro();
             }
         });
-        buttonIngresar.setOnClickListener(new View.OnClickListener(){
+        this.buttonIngresar.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -60,12 +61,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        vc = new ValidadorCampos();
+        this.validadorCampos = new ValidadorCampos();
+        this.validadorConexionInternet = new ValidadorConexionInternet();
 
     }
 
     private void iniciarSesion() {
-        if(!vc.camposCorrectos(this, txtContrasenia.getText().toString(), txtEmail.getText().toString())) {
+        if(!this.validadorCampos.camposCorrectos(this, this.txtContrasenia.getText().toString(), this.txtEmail.getText().toString())) {
+            return;
+        }
+
+        if(!this.validadorConexionInternet.validarConexionInternet(MainActivity.this)){
             return;
         }
 
@@ -79,8 +85,8 @@ public class MainActivity extends AppCompatActivity {
         //Armo el intent y se lo mando al service
         this.intent = new Intent(MainActivity.this, ServicePostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
-        this.intent.putExtra("uri", URI_LOGIN);
-        this.intent.putExtra("accion", ACCION_INICIAR_SESION);
+        this.intent.putExtra("uri", this.URI_LOGIN);
+        this.intent.putExtra("accion", this.ACCION_INICIAR_SESION);
 
         // Configuro el boradcast para poder recibir el resultado de service
         configurarBroadcastReciever();

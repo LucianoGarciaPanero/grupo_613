@@ -38,8 +38,9 @@ public class RegistrarActivity extends AppCompatActivity {
     private Button buttonVovler;
     private Button buttonRegistrar;
 
-    // Clase para validar entrada
-    private ValidadorCampos vc;
+    // Clase para validar
+    private ValidadorCampos validadorCampos;
+    private ValidadorConexionInternet validadorConexionInternet;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,19 +51,19 @@ public class RegistrarActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapterGrupo = ArrayAdapter.createFromResource(this, R.array.grupos, android.R.layout.simple_spinner_item);
         this.comboGrupo.setAdapter(adapterGrupo);
 
-        comboComision = (Spinner)findViewById(R.id.comboComision);
+        this.comboComision = (Spinner)findViewById(R.id.comboComision);
         ArrayAdapter<CharSequence> adapterComision = ArrayAdapter.createFromResource(this, R.array.comisiones, android.R.layout.simple_spinner_item);
-        comboComision.setAdapter(adapterComision);
+        this.comboComision.setAdapter(adapterComision);
 
-        txtNombre = findViewById(R.id.txtNombre);
-        txtApellido = findViewById(R.id.txtApellido);
-        txtDni = findViewById(R.id.numberDni);
-        txtContrasenia = findViewById(R.id.txtContrasenia);
-        txtEmail = findViewById(R.id.txtEmail);
-        buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
-        buttonVovler = (Button)findViewById(R.id.buttonVolver);
+        this.txtNombre = findViewById(R.id.txtNombre);
+        this.txtApellido = findViewById(R.id.txtApellido);
+        this.txtDni = findViewById(R.id.numberDni);
+        this.txtContrasenia = findViewById(R.id.txtContrasenia);
+        this.txtEmail = findViewById(R.id.txtEmail);
+        this.buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
+        this.buttonVovler = (Button)findViewById(R.id.buttonVolver);
 
-        buttonVovler.setOnClickListener(new View.OnClickListener(){
+        this.buttonVovler.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -70,7 +71,7 @@ public class RegistrarActivity extends AppCompatActivity {
             }
         });
 
-        buttonRegistrar.setOnClickListener(new View.OnClickListener(){
+        this.buttonRegistrar.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -78,7 +79,8 @@ public class RegistrarActivity extends AppCompatActivity {
             }
         });
 
-        vc = new ValidadorCampos();
+        this.validadorCampos = new ValidadorCampos();
+        this.validadorConexionInternet = new ValidadorConexionInternet();
     }
 
     private void volver(){
@@ -91,7 +93,11 @@ public class RegistrarActivity extends AppCompatActivity {
             return;
         }
 
-        if(!vc.camposCorrectos(this, txtContrasenia.getText().toString(), txtEmail.getText().toString())){
+        if(!validadorCampos.camposCorrectos(this, txtContrasenia.getText().toString(), txtEmail.getText().toString())){
+            return;
+        }
+
+        if(!this.validadorConexionInternet.validarConexionInternet(RegistrarActivity.this)){
             return;
         }
 
