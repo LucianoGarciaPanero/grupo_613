@@ -20,7 +20,6 @@ public class RegistrarActivity extends AppCompatActivity {
 
     // Constantes
     private final String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
-    private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
     private final String ACCION_REGISTRAR = "com.example.tp2.intent.action.ACCION_REGISTRAR";
 
     // Variables para la comunicacion con el service
@@ -100,7 +99,8 @@ public class RegistrarActivity extends AppCompatActivity {
         FormularioUsuario fu = crearFormularioUsuario();
         Gson json = new Gson();
         String jsonUsuario = json.toJson(fu);
-        // Armo el intent y se lo mando al usuario
+
+        // Armo el intent y se lo mando al service
         this.intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
         this.intent.putExtra("uri", URI_REGISTRO);
@@ -158,6 +158,9 @@ public class RegistrarActivity extends AppCompatActivity {
     }
 
     public class ReceptorRegistrar extends BroadcastReceiver {
+
+        public ReceptorRegistrar() {
+        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
