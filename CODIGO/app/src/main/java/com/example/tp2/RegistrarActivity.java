@@ -23,7 +23,7 @@ public class RegistrarActivity extends AppCompatActivity {
     private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
     private final String ACCION_REGISTRAR = "com.example.tp2.intent.action.ACCION_REGISTRAR";
     // Esta variable es para que podamos cambiar de entorno facilmente
-    private  final String ENV = "TEST";
+    private  final String ENV = "TEST"; // ENV = ["TEST"/"DEV"]
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;
@@ -151,20 +151,23 @@ public class RegistrarActivity extends AppCompatActivity {
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            // Recibo lo que me llega del intent
             Gson gson = new Gson();
             RespuestaServicioRegistrar respuesta;
             String json = intent.getStringExtra("json");
+
+            // Si es un error termino el método
             if(json.equals(ServicePostUsuario.ERROR)) {
                 Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(context.getApplicationContext(), "Exito", Toast.LENGTH_LONG).show();
+                return;
             }
-            /*
+
+            // Si no es un error lo transformo para poder analizarlo
             respuesta = gson.fromJson(json, RespuestaServicioRegistrar.class);
             if(respuesta.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
-                System.out.println(respuesta.toString());
-            }*/
+                // TODO: crea una nueva activity y le paso el json.
+            }
         }
     }
 }
