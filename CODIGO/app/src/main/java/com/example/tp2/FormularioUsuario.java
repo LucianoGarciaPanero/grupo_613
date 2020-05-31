@@ -11,17 +11,17 @@ public class FormularioUsuario {
     private int dni;
     private String email;
     private String password;
-    private int comission;
+    private int commission;
     private int group;
 
-    public FormularioUsuario(String env, String name, String lastname, int dni, String email, String password, int comission, int group) {
+    public FormularioUsuario(String env, String name, String lastname, int dni, String email, String password, int commission, int group) {
         this.env = env;
         this.name = name;
         this.lastname = lastname;
         this.dni = dni;
         this.email = email;
         this.password = password;
-        this.comission = comission;
+        this.commission = commission;
         this.group = group;
     }
 
@@ -73,12 +73,12 @@ public class FormularioUsuario {
         this.password = password;
     }
 
-    public int getComission() {
-        return comission;
+    public int getCommission() {
+        return commission;
     }
 
-    public void setComission(int comission) {
-        this.comission = comission;
+    public void setCommission(int commission) {
+        this.commission = commission;
     }
 
     public int getGroup() {

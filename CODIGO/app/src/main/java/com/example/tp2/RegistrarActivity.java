@@ -20,7 +20,6 @@ public class RegistrarActivity extends AppCompatActivity {
 
     // Constantes
     private final String URI_REGISTRO = "http://so-unlam.net.ar/api/api/register";
-    private final String URI_LOGIN = "http://so-unlam.net.ar/api/api/login";
     private final String ACCION_REGISTRAR = "com.example.tp2.intent.action.ACCION_REGISTRAR";
 
     // Variables para la comunicacion con el service
@@ -31,7 +30,6 @@ public class RegistrarActivity extends AppCompatActivity {
     // Objetos de la GUI
     private Spinner comboGrupo;
     private Spinner comboComision;
-    private Spinner comboEnv;
     private EditText txtNombre;
     private EditText txtApellido;
     private EditText txtDni;
@@ -39,6 +37,18 @@ public class RegistrarActivity extends AppCompatActivity {
     private EditText txtEmail;
     private Button buttonVovler;
     private Button buttonRegistrar;
+
+    // Clases para validar
+    private ValidadorCampos validadorCampos;
+    private ValidadorConexionInternet validadorConexionInternet;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(this.intent != null) {
+            stopService(this.intent);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,23 +59,19 @@ public class RegistrarActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapterGrupo = ArrayAdapter.createFromResource(this, R.array.grupos, android.R.layout.simple_spinner_item);
         this.comboGrupo.setAdapter(adapterGrupo);
 
-        comboComision = (Spinner)findViewById(R.id.comboComision);
+        this.comboComision = (Spinner)findViewById(R.id.comboComision);
         ArrayAdapter<CharSequence> adapterComision = ArrayAdapter.createFromResource(this, R.array.comisiones, android.R.layout.simple_spinner_item);
-        comboComision.setAdapter(adapterComision);
+        this.comboComision.setAdapter(adapterComision);
 
-        comboEnv = (Spinner)findViewById(R.id.comboEnv);
-        ArrayAdapter<CharSequence> adapterEnv = ArrayAdapter.createFromResource(this, R.array.envs, android.R.layout.simple_spinner_item);
-        comboEnv.setAdapter(adapterEnv);
+        this.txtNombre = findViewById(R.id.txtNombre);
+        this.txtApellido = findViewById(R.id.txtApellido);
+        this.txtDni = findViewById(R.id.numberDni);
+        this.txtContrasenia = findViewById(R.id.txtContrasenia);
+        this.txtEmail = findViewById(R.id.txtEmail);
+        this.buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
+        this.buttonVovler = (Button)findViewById(R.id.buttonVolver);
 
-        txtNombre = findViewById(R.id.txtNombre);
-        txtApellido = findViewById(R.id.txtApellido);
-        txtDni = findViewById(R.id.numberDni);
-        txtContrasenia = findViewById(R.id.txtContrasenia);
-        txtEmail = findViewById(R.id.txtEmail);
-        buttonRegistrar = (Button)findViewById(R.id.buttonRegistrar);
-        buttonVovler = (Button)findViewById(R.id.buttonVolver);
-
-        buttonVovler.setOnClickListener(new View.OnClickListener(){
+        this.buttonVovler.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
@@ -73,23 +79,35 @@ public class RegistrarActivity extends AppCompatActivity {
             }
         });
 
-        buttonRegistrar.setOnClickListener(new View.OnClickListener(){
+        this.buttonRegistrar.setOnClickListener(new View.OnClickListener(){
 
             @Override
             public void onClick(View v) {
                 registrar();
             }
         });
+
+        this.validadorCampos = new ValidadorCampos();
+        this.validadorConexionInternet = new ValidadorConexionInternet();
     }
 
-    public void volver(){
+    private void volver(){
+        Intent intentV = new Intent(RegistrarActivity.this, IniciarSesionActivity.class);
+        startActivity(intentV);
         finish();
     }
 
-    public  void registrar() {
+    private void registrar() {
 
         if( !ningunaEntradaVacia()) {
-            enviarMensaje("Falta completar algún campo");
+            return;
+        }
+
+        if(!validadorCampos.camposCorrectos(this, txtContrasenia.getText().toString(), txtEmail.getText().toString())){
+            return;
+        }
+
+        if(!this.validadorConexionInternet.estaConectadoAInternet(RegistrarActivity.this)){
             return;
         }
 
@@ -98,8 +116,8 @@ public class RegistrarActivity extends AppCompatActivity {
         Gson json = new Gson();
         String jsonUsuario = json.toJson(fu);
 
-        // Armo el intent y se lo mando al usuario
-        this.intent = new Intent(RegistrarActivity.this, ServicePostUsuario.class);
+        // Armo el intent y se lo mando al service
+        this.intent = new Intent(RegistrarActivity.this, ServicioPostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
         this.intent.putExtra("uri", URI_REGISTRO);
         this.intent.putExtra("accion", ACCION_REGISTRAR);
@@ -120,7 +138,6 @@ public class RegistrarActivity extends AppCompatActivity {
 
     private FormularioUsuario crearFormularioUsuario() {
         // Conversión de los datos en la GUI a variables para mandarlos
-        String env = this.comboEnv.getSelectedItem().toString().replaceAll("\n", "");
         String name = this.txtNombre.getText().toString().replaceAll("\n", "");
         String lastname = this.txtApellido.getText().toString().replaceAll("\n", "");
         int dni = Integer.parseInt(this.txtDni.getText().toString());
@@ -129,16 +146,20 @@ public class RegistrarActivity extends AppCompatActivity {
         int comission = Integer.parseInt(this.comboComision.getSelectedItem().toString());
         int group = Integer.parseInt(this.comboGrupo.getSelectedItem().toString());
 
-        return new FormularioUsuario(env, name, lastname, dni, email, password, comission, group);
+        return new FormularioUsuario(IniciarSesionActivity.ENV, name, lastname, dni, email, password, comission, group);
     }
+
+    /*
+    Solo valida que no haya campos vacios
+     */
 
     private boolean ningunaEntradaVacia() {
        if (this.txtNombre.getText().length() > 0 && this.txtApellido.getText().length() > 0 && this.txtDni.getText().length() > 0
             && this.txtContrasenia.getText().length() > 0 && this.txtEmail.getText().length() > 0
-               && this.comboEnv.getSelectedItem() != null && this.comboGrupo.getSelectedItem() != null
-               && this.comboComision.getSelectedItem() != null ) {
+               && this.comboGrupo.getSelectedItem() != null && this.comboComision.getSelectedItem() != null ) {
             return true;
        }
+        enviarMensaje("Falta completar algún campo");
         return false;
     }
 
@@ -147,29 +168,33 @@ public class RegistrarActivity extends AppCompatActivity {
         toast.show();
     }
 
-    public void onDestroy() {
-        super.onDestroy();
-        stopService(this.intent);
-    }
-
     public class ReceptorRegistrar extends BroadcastReceiver {
+
+        public ReceptorRegistrar() {
+        }
 
         @Override
         public void onReceive(Context context, Intent intent) {
+            // Recibo lo que me llega del intent
             Gson gson = new Gson();
-            RespuestaServicioRegistrar respuesta;
+            RespuestaServicioPost respuestaServicioPost;
             String json = intent.getStringExtra("json");
-            if(json.equals(ServicePostUsuario.ERROR)) {
+
+            // Si es un error termino el método
+            if(json.equals(ServicioPostUsuario.ERROR)) {
                 Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(context.getApplicationContext(), "Exito", Toast.LENGTH_LONG).show();
+                return;
             }
-            /*
-            respuesta = gson.fromJson(json, RespuestaServicioRegistrar.class);
-            if(respuesta.getState().equals("success")) {
+
+            // Si no es un error lo transformo para poder analizarlo
+            respuestaServicioPost = gson.fromJson(json, RespuestaServicioPost.class);
+            if(respuestaServicioPost.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
-                System.out.println(respuesta.toString());
-            }*/
+                Intent intentM = new Intent(RegistrarActivity.this, MenuActivity.class);
+                intentM.putExtra("token", respuestaServicioPost.getToken());
+                startActivity(intentM);
+                finish();
+            }
         }
     }
 }

@@ -5,15 +5,15 @@ public class Usuario {
     private String lastname;
     private int dni;
     private String email;
-    private int comission;
+    private int commission;
     private int group;
 
-    public Usuario(String name, String lastname, int dni, String email, int comission, int group) {
+    public Usuario(String name, String lastname, int dni, String email, int commission, int group) {
         this.name = name;
         this.lastname = lastname;
         this.dni = dni;
         this.email = email;
-        this.comission = comission;
+        this.commission = commission;
         this.group = group;
     }
 
@@ -49,12 +49,12 @@ public class Usuario {
         this.email = email;
     }
 
-    public int getComission() {
-        return comission;
+    public int getCommission() {
+        return commission;
     }
 
-    public void setComission(int comission) {
-        this.comission = comission;
+    public void setCommission(int commission) {
+        this.commission = commission;
     }
 
     public int getGroup() {
