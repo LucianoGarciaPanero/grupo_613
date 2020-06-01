@@ -108,6 +108,9 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void configurarPartida() {
+        /*
+        No finalizo esta activity porque se perdería el token, y de esa forma no se podría recuperar.
+         */
         Intent intentC = new Intent(MenuActivity.this, ConfigurarPartidaActivity.class);
         intentC.putExtra("token", token);
         startActivity(intentC);
@@ -145,7 +148,7 @@ public class MenuActivity extends AppCompatActivity {
             if(respuestaServicioPostEvento.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(),
                         "Tipo evento: " +  respuestaServicioPostEvento.getEvent().getType_events()
-                                +"\nNro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(), Toast.LENGTH_LONG).show();
+                                +"\nNro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(), Toast.LENGTH_SHORT).show();
 
             }
         }
