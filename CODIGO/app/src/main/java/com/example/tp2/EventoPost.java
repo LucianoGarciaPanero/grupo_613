@@ -1,13 +1,13 @@
 package com.example.tp2;
 
-public class Evento {
+public class EventoPost {
 
     private String env;
     private String type_events;
     private String state;
     private String description;
 
-    public Evento(String env, String type_events, String state, String description) {
+    public EventoPost(String env, String type_events, String state, String description) {
         this.env = env;
         this.type_events = type_events;
         this.state = state;

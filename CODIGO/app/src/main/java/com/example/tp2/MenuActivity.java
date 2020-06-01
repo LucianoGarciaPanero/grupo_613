@@ -2,10 +2,16 @@ package com.example.tp2;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
+
+import com.google.gson.Gson;
 
 public class MenuActivity extends AppCompatActivity {
 
@@ -14,10 +20,26 @@ public class MenuActivity extends AppCompatActivity {
     // Constantes
     public final static  String ULTIMO_RESULTADO = "ULTIMO_RESULTADO";
     public final static String MEJOR_RESULTADO = "MEJOR_RESULTADO";
+    private final static String URI_EVENTO = "http://so-unlam.net.ar/api/api/event";
+    private final static String ACCION_EVENTO = "com.example.tp2.intent.action.ACCION_EVENTO";
 
     // Objetos de la GUI
     private Button buttonUltimosResultados;
     private Button buttonMejorResultado;
+
+    // Variables para la comunicacion con el service
+    public IntentFilter filtro;
+    private ReceptorEvento receiver = new ReceptorEvento();
+    private Intent intent;
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if(this.intent != null) {
+            stopService(this.intent);
+        }
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +65,30 @@ public class MenuActivity extends AppCompatActivity {
 
         Intent intentIniciador = getIntent();
         this.token = intentIniciador.getExtras().getString("token");
+
+        EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, "AccesoCuenta", "ACTIVO", "Se relizo un acceso a la cuenta");
+        Gson json = new Gson();
+        String jsonEvento = json.toJson(eventoPost);
+
+        // Armo el intent y se lo mando al service
+        this.intent = new Intent(MenuActivity.this, ServicioPostEvento.class);
+        this.intent.putExtra("json", jsonEvento);
+        this.intent.putExtra("uri", this.URI_EVENTO);
+        this.intent.putExtra("accion", this.ACCION_EVENTO);
+        this.intent.putExtra("token", token);
+
+        // Configuro el boradcast para poder recibir el resultado de service
+        configurarBroadcastReciever();
+
+        // Inicio servicio
+        startService(this.intent);
+    }
+
+    private void configurarBroadcastReciever() {
+        this.filtro = new IntentFilter();
+        this.filtro.addAction(this.ACCION_EVENTO);
+        this.filtro.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(this.receiver, this.filtro);
     }
 
     private void verPuntuacion(String accion) {
@@ -52,5 +98,34 @@ public class MenuActivity extends AppCompatActivity {
         Intent intentP = new Intent(MenuActivity.this, ResultadoActivity.class);
         intentP.putExtra("accion", accion);
         startActivity(intentP);
+    }
+
+    public class ReceptorEvento extends BroadcastReceiver {
+
+        public ReceptorEvento() {
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Recibo lo que me llega del intent
+            Gson gson = new Gson();
+            RespuestaServicioPostEvento respuestaServicioPostEvento;
+            String json = intent.getStringExtra("json");
+
+            // Si es un error termino el método
+            if(json.equals(ServicioPostUsuario.ERROR)) {
+                Toast.makeText(context.getApplicationContext(), "No se pudo registrar el evento", Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            // Si no es un error lo transformo para poder analizarlo
+            respuestaServicioPostEvento = gson.fromJson(json, RespuestaServicioPostEvento.class);
+            if(respuestaServicioPostEvento.getState().equals("success")) {
+                Toast.makeText(context.getApplicationContext(),
+                        "Registro de evento correcto, nro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(),
+                        Toast.LENGTH_LONG).show();
+
+            }
+        }
     }
 }
