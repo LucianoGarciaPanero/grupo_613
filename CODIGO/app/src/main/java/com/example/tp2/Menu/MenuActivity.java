@@ -88,7 +88,6 @@ public class MenuActivity extends AppCompatActivity {
             postAcceso();
         }
 
-
     }
 
     private void postAcceso() {
