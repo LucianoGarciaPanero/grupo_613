@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.tp2.Menu.MenuActivity;
+import com.example.tp2.R;
 import com.google.gson.Gson;
 
 public class IniciarSesionActivity extends AppCompatActivity {

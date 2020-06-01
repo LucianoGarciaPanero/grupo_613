@@ -1,6 +1,5 @@
 package com.example.tp2;
 
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.BroadcastReceiver;
@@ -11,16 +10,10 @@ import android.content.SharedPreferences;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
-import android.hardware.SensorListener;
 import android.hardware.SensorManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.CountDownTimer;
-import android.os.Parcelable;
 import android.util.Log;
-import android.view.Display;
 import android.view.Surface;
-import android.view.WindowManager;
 import android.widget.TextView;
 
 import java.text.DecimalFormat;

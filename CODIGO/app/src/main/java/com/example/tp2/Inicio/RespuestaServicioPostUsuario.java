@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
 public class RespuestaServicioPostUsuario {
     private String state;

@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Menu;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,6 +11,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.tp2.Enums.EstadoEvento;
+import com.example.tp2.Enums.TipoEvento;
+import com.example.tp2.Inicio.IniciarSesionActivity;
+import com.example.tp2.Inicio.ServicioPostUsuario;
+import com.example.tp2.R;
 import com.google.gson.Gson;
 
 public class MenuActivity extends AppCompatActivity {
@@ -26,6 +31,7 @@ public class MenuActivity extends AppCompatActivity {
     // Objetos de la GUI
     private Button buttonUltimosResultados;
     private Button buttonMejorResultado;
+    private Button buttonJugar;
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;
@@ -46,8 +52,9 @@ public class MenuActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
 
-        this.buttonUltimosResultados = (Button)findViewById(R.id.buttonUltimoResultado);
-        this.buttonMejorResultado = (Button)findViewById(R.id.buttonMejorResultado);
+        this.buttonUltimosResultados = findViewById(R.id.buttonUltimoResultado);
+        this.buttonMejorResultado = findViewById(R.id.buttonMejorResultado);
+        this.buttonJugar = findViewById(R.id.buttonJugar);
 
         this.buttonUltimosResultados.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,6 +67,13 @@ public class MenuActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 verPuntuacion(MenuActivity.MEJOR_RESULTADO);
+            }
+        });
+
+        this.buttonJugar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                configurarPartida();
             }
         });
 
@@ -83,6 +97,9 @@ public class MenuActivity extends AppCompatActivity {
 
         // Inicio servicio
         startService(this.intent);
+    }
+
+    private void configurarPartida() {
     }
 
     private void configurarBroadcastReciever() {

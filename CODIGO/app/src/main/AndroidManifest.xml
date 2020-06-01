@@ -16,23 +16,23 @@
             android:name=".Timer"
             android:exported="false">
         </service>
-        <service android:name=".ServicioPostUsuario" />
-        <service android:name=".ServicioPostEvento" />
+        <service android:name=".Inicio.ServicioPostUsuario" />
+        <service android:name=".Menu.ServicioPostEvento" />
 
-        <activity android:name=".ResultadoActivity" />
+        <activity android:name=".Menu.ResultadoActivity" />
         <activity android:name=".RegistroSensor" />
-        <activity android:name=".RegistrarActivity" />
-        <activity android:name=".MenuActivity" />
-        <activity android:name=".IniciarSesionActivity">
+        <activity android:name=".Inicio.RegistrarActivity" />
+        <activity android:name=".Menu.MenuActivity" />
+        <activity android:name=".Inicio.IniciarSesionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".RegistrarActivity$ReceptorRegistrar"/>
-        <receiver android:name=".IniciarSesionActivity$ReceptorIniciarSesion" />
-        <receiver android:name=".MenuActivity$ReceptorEvento"/>
+        <receiver android:name=".Inicio.RegistrarActivity$ReceptorRegistrar"/>
+        <receiver android:name=".Inicio.IniciarSesionActivity$ReceptorIniciarSesion" />
+        <receiver android:name=".Menu.MenuActivity$ReceptorEvento"/>
         <receiver android:name=".RegistroSensor$ReceptorTimer"/>
     </application>
 </manifest>

@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Menu;
 
 /*
 Existe un record unicamente por los puntos, pero habra uno por cada categoría

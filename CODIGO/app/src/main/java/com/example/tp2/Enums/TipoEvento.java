@@ -1,12 +1,11 @@
-package com.example.tp2;
+package com.example.tp2.Enums;
 
-public enum EstadoEvento {
-    ACTIVO("ACTIVO"),
-    INACTIVO("INACTIVO");
+public enum TipoEvento {
+    ACCESO("AccesoCuenta");
 
     private String texto;
 
-    private EstadoEvento(String texto) {
+    private TipoEvento(String texto) {
         this.texto = texto;
     }
 

@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Menu;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -12,18 +12,13 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.nio.Buffer;
 
-/*
-Este servicio se registra en segundo plano, es el que se comunica con el WebService para registrar al usuario.
- */
+public class ServicioPostEvento extends IntentService {
 
-public class ServicioPostUsuario extends IntentService {
+    private final static String ERROR = "ERROR";
 
-    public final static String ERROR = "ERROR";
-
-    public ServicioPostUsuario() {
-        super("ServicioPostUsuario");
+    public ServicioPostEvento() {
+        super("ServicioPostEvento");
     }
 
     @Override
@@ -33,15 +28,15 @@ public class ServicioPostUsuario extends IntentService {
 
     @Override
     protected void onHandleIntent(@Nullable Intent intent) {
-
         // Saco los datos del intent
         Bundle extras = intent.getExtras();
         String accion = extras.getString("accion");
         String json = extras.getString("json");
         String uri = extras.getString("uri");
+        String token = extras.getString("token");
 
         // Ejecuto el POST
-        String resultado = post(uri,json);
+        String resultado = post(uri, json, token);
 
         // Devuelvo lo que llega
         Intent intentPost = new Intent();
@@ -50,7 +45,7 @@ public class ServicioPostUsuario extends IntentService {
         sendBroadcast(intentPost);
     }
 
-    private String post(String uri, String json) {
+    private String post(String uri, String json, String token) {
 
         // Creo variables necesarias
         String resultado;
@@ -67,6 +62,7 @@ public class ServicioPostUsuario extends IntentService {
             con.setDoOutput(true);
             con.setDoInput(true);
             con.setRequestMethod("POST");
+            con.setRequestProperty("token", token);
 
             // Creo el flujo de datos
             DataOutputStream out = new DataOutputStream(con.getOutputStream());
@@ -84,11 +80,11 @@ public class ServicioPostUsuario extends IntentService {
             if (codR == HttpURLConnection.HTTP_OK || codR == HttpURLConnection.HTTP_CREATED) {
                 resultado = convertirInputStreamToString(new InputStreamReader(con.getInputStream()));
             } else {
-                resultado = ERROR;
+                resultado = this.ERROR;
             }
             return resultado;
         } catch (Exception e){
-            return ERROR;
+            return this.ERROR;
         } finally {
             if (con != null) {
                 con.disconnect();

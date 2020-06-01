@@ -1,16 +1,25 @@
-package com.example.tp2;
+package com.example.tp2.Menu;
 
-public class EventoRecibir {
+public class EventoPost {
+
+    private String env;
     private String type_events;
     private String state;
     private String description;
-    private int group;
 
-    public EventoRecibir(String type_events, String state, String description, int group) {
+    public EventoPost(String env, String type_events, String state, String description) {
+        this.env = env;
         this.type_events = type_events;
         this.state = state;
         this.description = description;
-        this.group = group;
+    }
+
+    public String getEnv() {
+        return env;
+    }
+
+    public void setEnv(String env) {
+        this.env = env;
     }
 
     public String getType_events() {
@@ -35,13 +44,5 @@ public class EventoRecibir {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public int getGroup() {
-        return group;
-    }
-
-    public void setGroup(int group) {
-        this.group = group;
     }
 }

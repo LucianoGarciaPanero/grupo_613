@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Menu;
 
 public class RespuestaServicioPostEvento {
     private String state;
