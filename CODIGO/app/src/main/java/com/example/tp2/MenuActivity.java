@@ -66,7 +66,7 @@ public class MenuActivity extends AppCompatActivity {
         Intent intentIniciador = getIntent();
         this.token = intentIniciador.getExtras().getString("token");
 
-        EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, "AccesoCuenta", "ACTIVO", "Se relizo un acceso a la cuenta");
+        EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.ACCESO.toString(), "ACTIVO", "Se relizo un acceso a la cuenta");
         Gson json = new Gson();
         String jsonEvento = json.toJson(eventoPost);
 
