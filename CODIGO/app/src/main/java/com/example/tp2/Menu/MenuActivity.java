@@ -15,6 +15,7 @@ import com.example.tp2.Enums.EstadoEvento;
 import com.example.tp2.Enums.TipoEvento;
 import com.example.tp2.Inicio.IniciarSesionActivity;
 import com.example.tp2.Inicio.ServicioPostUsuario;
+import com.example.tp2.Partida.ConfigurarPartidaActivity;
 import com.example.tp2.R;
 import com.google.gson.Gson;
 
@@ -107,6 +108,9 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void configurarPartida() {
+        Intent intentC = new Intent(MenuActivity.this, ConfigurarPartidaActivity.class);
+        intentC.putExtra("token", token);
+        startActivity(intentC);
     }
 
     private void verPuntuacion(String accion) {
