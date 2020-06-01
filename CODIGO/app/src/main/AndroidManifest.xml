@@ -12,7 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".Partida.PartidaActivity"></activity>
+        <activity android:name=".Partida.FinPartidaActivity"></activity>
+        <activity android:name=".Partida.PartidaActivity" />
         <activity android:name=".Partida.ConfigurarPartidaActivity" />
 
         <service

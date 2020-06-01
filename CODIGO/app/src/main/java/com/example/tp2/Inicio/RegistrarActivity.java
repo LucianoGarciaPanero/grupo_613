@@ -194,6 +194,7 @@ public class RegistrarActivity extends AppCompatActivity {
                 Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
                 Intent intentM = new Intent(RegistrarActivity.this, MenuActivity.class);
                 intentM.putExtra("token", respuestaServicioPostUsuario.getToken());
+                intentM.putExtra("origen", "inicio");
                 startActivity(intentM);
                 finish();
             }

@@ -81,8 +81,18 @@ public class MenuActivity extends AppCompatActivity {
         // Rescato el token
         Intent intentIniciador = getIntent();
         this.token = intentIniciador.getExtras().getString("token");
+        String origen = intentIniciador.getExtras().getString("origen");
 
-        // Mandd un post de servicio para indiciar que hubo un acceso de la cuenta
+        // Solo si se llega desde la pantalla de inicio se va a realizar el post de acceso
+        if (origen.equals("inicio")) {
+            postAcceso();
+        }
+
+
+    }
+
+    private void postAcceso() {
+        // Mando un post de servicio para indiciar que hubo un acceso de la cuenta
         EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.ACCESO.toString(), EstadoEvento.ACTIVO.toString(),
                 "Se relizo un acceso a la cuenta");
         Gson json = new Gson();
@@ -110,17 +120,15 @@ public class MenuActivity extends AppCompatActivity {
     }
 
     private void configurarPartida() {
-        /*
-        No finalizo esta activity porque se perdería el token, y de esa forma no se podría recuperar.
-         */
         Intent intentC = new Intent(MenuActivity.this, ConfigurarPartidaActivity.class);
         intentC.putExtra("token", token);
         startActivity(intentC);
+        finish();
     }
 
     private void verPuntuacion(String accion) {
         /*
-        No finalizo esta activity porque se perdería el token, y de esa forma no se podría recuperar.
+        No finalizo esta activity para poder llegar con la flecha para atras
          */
         Intent intentP = new Intent(MenuActivity.this, ResultadoActivity.class);
         intentP.putExtra("accion", accion);

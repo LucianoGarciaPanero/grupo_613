@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.example.tp2.Enums.NombreColor;
 import com.example.tp2.Enums.Dificultad;
+import com.example.tp2.Menu.MenuActivity;
 import com.example.tp2.R;
 import com.google.gson.Gson;
 
@@ -45,7 +46,7 @@ public class ConfigurarPartidaActivity extends AppCompatActivity {
         this.buttonVolver.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
+               volver();
             }
         });
 
@@ -95,6 +96,14 @@ public class ConfigurarPartidaActivity extends AppCompatActivity {
         Intent intentP = new Intent(ConfigurarPartidaActivity.this, PartidaActivity.class);
         intentP.putExtra("json", jsonPartida);
         startActivity(intentP);
+        finish();
+    }
+
+    private void volver() {
+        Intent intentV = new Intent(ConfigurarPartidaActivity.this, MenuActivity.class);
+        intentV.putExtra("token", this.token);
+        intentV.putExtra("origen", "config_partida");
+        startActivity(intentV);
         finish();
     }
 }

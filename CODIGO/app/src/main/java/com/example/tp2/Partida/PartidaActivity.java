@@ -7,20 +7,35 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 
 import com.example.tp2.Enums.Dificultad;
 import com.example.tp2.Enums.NombreColor;
+import com.example.tp2.Menu.Resultado;
 import com.example.tp2.R;
 import com.google.gson.Gson;
 
 public class PartidaActivity extends AppCompatActivity {
 
     private String token;
+    private String dificultad;
+
+    // Objetos de la GUI
+    private Button buttonFin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_partida);
+
+        this.buttonFin = findViewById(R.id.buttonFin);
+
+        this.buttonFin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                terminarPartida();
+            }
+        });
 
         // Hago la configuración dependiendo de lo que me llego
         Gson json = new Gson();
@@ -44,7 +59,7 @@ public class PartidaActivity extends AppCompatActivity {
         }
 
         // Logica para la dificultad
-        String dificultad = config.getDificultad();
+        this.dificultad = config.getDificultad();
         if( dificultad.toString().equals(Dificultad.DIFICIL.toString())) {
             // TODO: Aca va la logica para una dificultad dificil.
         } else if (dificultad.equals(Dificultad.MEDIO.toString())) {
@@ -52,5 +67,28 @@ public class PartidaActivity extends AppCompatActivity {
         } else {
             // TODO: Aca va la logica para una dificultad facil.
         }
+    }
+
+    private void terminarPartida() {
+        // Hay que ver como setear estos valores
+        int puntos = 0;
+        float tiempo = 0;
+        float aceleracionMax = 0;
+        //
+        Gson json = new Gson();
+
+        Resultado resultado = new Resultado(puntos, tiempo, aceleracionMax, this.dificultad);
+        String jsonResultado = json.toJson(resultado);
+
+        // Armo el intent
+        Intent intentF = new Intent(PartidaActivity.this, FinPartidaActivity.class);
+        intentF.putExtra("json", jsonResultado);
+        intentF.putExtra("token", this.token);
+
+        // Inicio activity
+        startActivity(intentF);
+
+        // Cierro esta activity
+        finish();
     }
 }
