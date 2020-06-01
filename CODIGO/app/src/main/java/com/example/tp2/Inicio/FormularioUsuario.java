@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
 /*
 La idea de esta clase es de usarla para la serialización y deserialización con Json.

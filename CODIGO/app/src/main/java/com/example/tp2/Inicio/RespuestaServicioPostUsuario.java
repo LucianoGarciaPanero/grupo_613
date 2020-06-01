@@ -1,11 +1,11 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
-public class RespuestaServicioPost {
+public class RespuestaServicioPostUsuario {
     private String state;
     private String env;
     private String token;
 
-    public RespuestaServicioPost(String state, String env, String token) {
+    public RespuestaServicioPostUsuario(String state, String env, String token) {
         this.state = state;
         this.env = env;
         this.token = token;
@@ -37,7 +37,7 @@ public class RespuestaServicioPost {
 
     @Override
     public String toString() {
-        return "RespuestaServicioPost{" +
+        return "RespuestaServicioPostUsuario{" +
                 "state='" + state + '\'' +
                 ", env='" + env + '\'' +
                 ", token='" + token + '\'' +

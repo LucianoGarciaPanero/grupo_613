@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.tp2.Menu.MenuActivity;
+import com.example.tp2.R;
 import com.google.gson.Gson;
 
 public class IniciarSesionActivity extends AppCompatActivity {
@@ -128,7 +130,7 @@ public class IniciarSesionActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Recibo lo que me llega del intent
             Gson gson = new Gson();
-            RespuestaServicioPost respuestaServicioPost;
+            RespuestaServicioPostUsuario respuestaServicioPostUsuario;
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
@@ -138,11 +140,12 @@ public class IniciarSesionActivity extends AppCompatActivity {
             }
 
             // Si no es un error lo transformo para poder analizarlo
-            respuestaServicioPost = gson.fromJson(json, RespuestaServicioPost.class);
-            if(respuestaServicioPost.getState().equals("success")) {
+            respuestaServicioPostUsuario = gson.fromJson(json, RespuestaServicioPostUsuario.class);
+            if(respuestaServicioPostUsuario.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_LONG).show();
                 Intent intentM = new Intent(IniciarSesionActivity.this, MenuActivity.class);
-                intentM.putExtra("token", respuestaServicioPost.getToken());
+                intentM.putExtra("token", respuestaServicioPostUsuario.getToken());
+                intentM.putExtra("origen", "inicio");
                 startActivity(intentM);
                 finish();
             }

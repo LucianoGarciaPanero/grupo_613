@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -14,6 +14,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.tp2.Menu.MenuActivity;
+import com.example.tp2.R;
 import com.google.gson.Gson;
 
 public class RegistrarActivity extends AppCompatActivity {
@@ -119,8 +121,8 @@ public class RegistrarActivity extends AppCompatActivity {
         // Armo el intent y se lo mando al service
         this.intent = new Intent(RegistrarActivity.this, ServicioPostUsuario.class);
         this.intent.putExtra("json", jsonUsuario);
-        this.intent.putExtra("uri", URI_REGISTRO);
-        this.intent.putExtra("accion", ACCION_REGISTRAR);
+        this.intent.putExtra("uri", this.URI_REGISTRO);
+        this.intent.putExtra("accion", this.ACCION_REGISTRAR);
 
         // Configuro el boradcast para poder recibir el resultado de service
         configurarBroadcastReciever();
@@ -131,7 +133,7 @@ public class RegistrarActivity extends AppCompatActivity {
 
     private void configurarBroadcastReciever() {
         this.filtro = new IntentFilter();
-        this.filtro.addAction(ACCION_REGISTRAR);
+        this.filtro.addAction(this.ACCION_REGISTRAR);
         this.filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(this.receiver, this.filtro);
     }
@@ -177,7 +179,7 @@ public class RegistrarActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             // Recibo lo que me llega del intent
             Gson gson = new Gson();
-            RespuestaServicioPost respuestaServicioPost;
+            RespuestaServicioPostUsuario respuestaServicioPostUsuario;
             String json = intent.getStringExtra("json");
 
             // Si es un error termino el método
@@ -187,11 +189,12 @@ public class RegistrarActivity extends AppCompatActivity {
             }
 
             // Si no es un error lo transformo para poder analizarlo
-            respuestaServicioPost = gson.fromJson(json, RespuestaServicioPost.class);
-            if(respuestaServicioPost.getState().equals("success")) {
+            respuestaServicioPostUsuario = gson.fromJson(json, RespuestaServicioPostUsuario.class);
+            if(respuestaServicioPostUsuario.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
                 Intent intentM = new Intent(RegistrarActivity.this, MenuActivity.class);
-                intentM.putExtra("token", respuestaServicioPost.getToken());
+                intentM.putExtra("token", respuestaServicioPostUsuario.getToken());
+                intentM.putExtra("origen", "inicio");
                 startActivity(intentM);
                 finish();
             }

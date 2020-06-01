@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
 import android.app.IntentService;
 import android.content.Intent;

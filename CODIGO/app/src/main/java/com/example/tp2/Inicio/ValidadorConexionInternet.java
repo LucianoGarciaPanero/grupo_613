@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Inicio;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

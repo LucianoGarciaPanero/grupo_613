@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Partida.FinPartidaActivity">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline95"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".2" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline96"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent=".8" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline97"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".05" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline98"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".15" />
+
+    <TextView
+        android:id="@+id/txtFinPartida"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Fin de partida"
+        android:textAlignment="center"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toTopOf="@+id/guideline98"
+        app:layout_constraintEnd_toStartOf="@+id/guideline96"
+        app:layout_constraintStart_toStartOf="@+id/guideline95"
+        app:layout_constraintTop_toTopOf="@+id/guideline97" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline99"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.95396" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline100"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent=".85" />
+
+    <Button
+        android:id="@+id/buttonVolver"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text="Volver al menu"
+        app:layout_constraintBottom_toTopOf="@+id/guideline99"
+        app:layout_constraintEnd_toStartOf="@+id/guideline96"
+        app:layout_constraintStart_toStartOf="@+id/guideline95"
+        app:layout_constraintTop_toTopOf="@+id/guideline100" />
+</androidx.constraintlayout.widget.ConstraintLayout>
