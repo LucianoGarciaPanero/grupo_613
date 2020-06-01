@@ -26,7 +26,6 @@ public class Timer extends IntentService {
 
         action = intent.getExtras().getString("Accion");
 
-
         for(int j = 0 ; j <=29; j++){
 
             Intent i = new Intent();
@@ -50,29 +49,6 @@ public class Timer extends IntentService {
         i.setAction(action);
         i.putExtra("tipo",FINALIZO_TIMER);
         sendBroadcast(i);
-
-
-        /*new CountDownTimer(tiempoRestanteEnMilis,1000){
-            @Override
-            public void onTick(long milisHastaTerminar) {
-
-                Intent i = new Intent();
-                i.setAction(action);
-                i.putExtra("tipo",PASO_SEG);
-                i.putExtra("tiempoRestante",milisHastaTerminar/1000);
-                sendBroadcast(i);
-            }
-
-            @Override
-            public void onFinish() {
-                Intent i = new Intent();
-                i.setAction(action);
-                i.putExtra("tipo",FINALIZO_TIMER);
-                sendBroadcast(i);
-            }
-        }.start();
-            */
-
     }
 
 
