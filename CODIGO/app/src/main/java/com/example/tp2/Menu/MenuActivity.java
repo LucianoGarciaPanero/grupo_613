@@ -78,9 +78,11 @@ public class MenuActivity extends AppCompatActivity {
             }
         });
 
+        // Rescato el token
         Intent intentIniciador = getIntent();
         this.token = intentIniciador.getExtras().getString("token");
 
+        // Mandd un post de servicio para indiciar que hubo un acceso de la cuenta
         EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.ACCESO.toString(), EstadoEvento.ACTIVO.toString(),
                 "Se relizo un acceso a la cuenta");
         Gson json = new Gson();

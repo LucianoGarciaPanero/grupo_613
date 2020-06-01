@@ -10,7 +10,7 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.tp2.Enums.Color;
+import com.example.tp2.Enums.NombreColor;
 import com.example.tp2.Enums.Dificultad;
 import com.example.tp2.R;
 import com.google.gson.Gson;
@@ -77,12 +77,12 @@ public class ConfigurarPartidaActivity extends AppCompatActivity {
             dificultad = Dificultad.FACIL.toString();
         }
 
-        if( this.comboFondo.getSelectedItem().toString().equals(Color.BLANCO.toString())) {
-            colorFondo = Color.BLANCO.toString();
-        } else if (this.comboFondo.getSelectedItem().toString().equals(Color.AMARILO.toString())) {
-            colorFondo = Color.AMARILO.toString();
+        if( this.comboFondo.getSelectedItem().toString().equals(NombreColor.BLANCO.toString())) {
+            colorFondo = NombreColor.BLANCO.toString();
+        } else if (this.comboFondo.getSelectedItem().toString().equals(NombreColor.AMARILO.toString())) {
+            colorFondo = NombreColor.AMARILO.toString();
         } else {
-            colorFondo = Color.ROJO.toString();
+            colorFondo = NombreColor.ROJO.toString();
         }
 
         ConfiguracionDePartida config = new ConfiguracionDePartida(dificultad, colorFondo, this.token);

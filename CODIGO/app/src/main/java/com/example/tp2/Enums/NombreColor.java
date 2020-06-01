@@ -1,13 +1,13 @@
 package com.example.tp2.Enums;
 
-public enum Color {
+public enum NombreColor {
     BLANCO("BLANCO"),
     ROJO("ROJO"),
     AMARILO("AMARILLO");
 
     private String texto;
 
-    private Color(String texto) {
+    private NombreColor(String texto) {
         this.texto = texto;
     }
 
