@@ -17,6 +17,7 @@
             android:exported="false">
         </service>
         <service android:name=".ServicioPostUsuario" />
+        <service android:name=".ServicioPostEvento" />
 
         <activity android:name=".ResultadoActivity" />
         <activity android:name=".RegistroSensor" />
