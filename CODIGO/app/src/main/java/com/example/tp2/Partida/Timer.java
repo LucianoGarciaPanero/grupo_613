@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Partida;
 
 import android.app.IntentService;
 import android.content.Intent;

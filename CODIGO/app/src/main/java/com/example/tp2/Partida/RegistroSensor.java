@@ -1,4 +1,4 @@
-package com.example.tp2;
+package com.example.tp2.Partida;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Surface;
 import android.widget.TextView;
+
+import com.example.tp2.R;
 
 import java.text.DecimalFormat;
 

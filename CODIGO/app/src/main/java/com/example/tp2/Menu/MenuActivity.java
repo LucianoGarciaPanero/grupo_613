@@ -99,14 +99,14 @@ public class MenuActivity extends AppCompatActivity {
         startService(this.intent);
     }
 
-    private void configurarPartida() {
-    }
-
     private void configurarBroadcastReciever() {
         this.filtro = new IntentFilter();
         this.filtro.addAction(this.ACCION_EVENTO);
         this.filtro.addCategory(Intent.CATEGORY_DEFAULT);
         registerReceiver(this.receiver, this.filtro);
+    }
+
+    private void configurarPartida() {
     }
 
     private void verPuntuacion(String accion) {
@@ -140,7 +140,7 @@ public class MenuActivity extends AppCompatActivity {
             respuestaServicioPostEvento = gson.fromJson(json, RespuestaServicioPostEvento.class);
             if(respuestaServicioPostEvento.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(),
-                        "Tipo evento :" +  respuestaServicioPostEvento.getEvent().getType_events()
+                        "Tipo evento: " +  respuestaServicioPostEvento.getEvent().getType_events()
                                 +"\nNro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(), Toast.LENGTH_LONG).show();
 
             }

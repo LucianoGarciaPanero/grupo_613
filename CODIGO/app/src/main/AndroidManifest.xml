@@ -12,15 +12,16 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Partida.ConfigurarPartidaActivity"></activity>
+
         <service
-            android:name=".Timer"
-            android:exported="false">
-        </service>
+            android:name=".Partida.Timer"
+            android:exported="false"></service>
         <service android:name=".Inicio.ServicioPostUsuario" />
         <service android:name=".Menu.ServicioPostEvento" />
 
         <activity android:name=".Menu.ResultadoActivity" />
-        <activity android:name=".RegistroSensor" />
+        <activity android:name=".Partida.RegistroSensor" />
         <activity android:name=".Inicio.RegistrarActivity" />
         <activity android:name=".Menu.MenuActivity" />
         <activity android:name=".Inicio.IniciarSesionActivity">
@@ -30,9 +31,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".Inicio.RegistrarActivity$ReceptorRegistrar"/>
+
+        <receiver android:name=".Inicio.RegistrarActivity$ReceptorRegistrar" />
         <receiver android:name=".Inicio.IniciarSesionActivity$ReceptorIniciarSesion" />
-        <receiver android:name=".Menu.MenuActivity$ReceptorEvento"/>
-        <receiver android:name=".RegistroSensor$ReceptorTimer"/>
+        <receiver android:name=".Menu.MenuActivity$ReceptorEvento" />
+        <receiver android:name=".Partida.RegistroSensor$ReceptorTimer" />
     </application>
+
 </manifest>
