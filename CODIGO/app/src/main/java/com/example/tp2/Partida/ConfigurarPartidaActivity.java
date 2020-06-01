@@ -10,8 +10,10 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.example.tp2.Enums.Color;
 import com.example.tp2.Enums.Dificultad;
 import com.example.tp2.R;
+import com.google.gson.Gson;
 
 public class ConfigurarPartidaActivity extends AppCompatActivity {
 
@@ -47,10 +49,52 @@ public class ConfigurarPartidaActivity extends AppCompatActivity {
             }
         });
 
+        this.buttonIniciarPartida.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                iniciarPartida();
+            }
+        });
+
         // Recupero el token
         Intent intentIniciador = getIntent();
         this.token = intentIniciador.getExtras().getString("token");
         Toast.makeText(this,token, Toast.LENGTH_LONG);
 
+    }
+
+    private void iniciarPartida() {
+        String colorFondo;
+        String dificultad;
+
+        // Lógica para seleccionar la dificultad y el color de fondo
+
+        if( this.comboDificultad.getSelectedItem().toString().equals(Dificultad.DIFICIL.toString())) {
+            dificultad = Dificultad.DIFICIL.toString();
+        } else if (this.comboDificultad.getSelectedItem().toString().equals(Dificultad.MEDIO.toString())) {
+            dificultad = Dificultad.MEDIO.toString();
+        } else {
+            dificultad = Dificultad.FACIL.toString();
+        }
+
+        if( this.comboFondo.getSelectedItem().toString().equals(Color.BLANCO.toString())) {
+            colorFondo = Color.BLANCO.toString();
+        } else if (this.comboFondo.getSelectedItem().toString().equals(Color.AMARILO.toString())) {
+            colorFondo = Color.AMARILO.toString();
+        } else {
+            colorFondo = Color.ROJO.toString();
+        }
+
+        ConfiguracionDePartida config = new ConfiguracionDePartida(dificultad, colorFondo, this.token);
+
+        //Conversion a json
+        Gson json = new Gson();
+        String jsonPartida = json.toJson(config);
+
+        //Creo el intent y lo mando
+        Intent intentP = new Intent(ConfigurarPartidaActivity.this, PartidaActivity.class);
+        intentP.putExtra("json", jsonPartida);
+        startActivity(intentP);
+        finish();
     }
 }
