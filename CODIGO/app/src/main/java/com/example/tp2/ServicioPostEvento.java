@@ -17,7 +17,7 @@ public class ServicioPostEvento extends IntentService {
 
     private final static String ERROR = "ERROR";
 
-    public ServicioPostEvento(String name) {
+    public ServicioPostEvento() {
         super("ServicioPostEvento");
     }
 

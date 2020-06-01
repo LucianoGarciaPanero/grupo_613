@@ -30,7 +30,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".RegistrarActivity$ReceptorRegistrar"></receiver>
+        <receiver android:name=".RegistrarActivity$ReceptorRegistrar"/>
         <receiver android:name=".IniciarSesionActivity$ReceptorIniciarSesion" />
+        <receiver android:name=".MenuActivity$ReceptorEvento"/>
+        <receiver android:name=".RegistroSensor$ReceptorTimer"/>
     </application>
 </manifest>

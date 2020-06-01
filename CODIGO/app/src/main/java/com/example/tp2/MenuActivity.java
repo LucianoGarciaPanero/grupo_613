@@ -122,8 +122,8 @@ public class MenuActivity extends AppCompatActivity {
             respuestaServicioPostEvento = gson.fromJson(json, RespuestaServicioPostEvento.class);
             if(respuestaServicioPostEvento.getState().equals("success")) {
                 Toast.makeText(context.getApplicationContext(),
-                        "Registro de evento correcto, nro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(),
-                        Toast.LENGTH_LONG).show();
+                        "Tipo evento :" +  respuestaServicioPostEvento.getEvent().getType_events()
+                                +"\nNro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(), Toast.LENGTH_LONG).show();
 
             }
         }
