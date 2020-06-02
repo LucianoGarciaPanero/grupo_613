@@ -16,19 +16,26 @@ public class Timer extends IntentService {
     public static final String   FINALIZO_TIMER = "finalizoTimer";
 
     private long                 tiempoRestanteEnMilis;
+    private boolean activo;
 
     public Timer() {
         super("Timer");
     }
 
     @Override
-    protected void onHandleIntent(Intent intent) {
+    public void onDestroy() {
+        super.onDestroy();
+        activo = false;
+    }
 
+    @Override
+    protected void onHandleIntent(Intent intent) {
+        activo = true;
         action = intent.getExtras().getString("Accion");
         tiempoRestanteEnMilis = intent.getLongExtra("tiempoRestante",30000);
         long topeTiempo = tiempoRestanteEnMilis/1000;
 
-        for(int j = 0 ; j <= topeTiempo; j++){
+        for(int j = 0 ; j <= topeTiempo && activo; j++){
 
             Intent i = new Intent();
             i.setAction(action);
@@ -45,12 +52,14 @@ public class Timer extends IntentService {
             tiempoRestanteEnMilis-= 1000;
 
         }
+        if (activo) {
+            Intent i = new Intent();
+            i.setAction(action);
+            i.putExtra("tipo",FINALIZO_TIMER);
+            sendBroadcast(i);
+            stopSelf();
+        }
 
-        Intent i = new Intent();
-        i.setAction(action);
-        i.putExtra("tipo",FINALIZO_TIMER);
-        sendBroadcast(i);
-        stopSelf();
     }
 
 
