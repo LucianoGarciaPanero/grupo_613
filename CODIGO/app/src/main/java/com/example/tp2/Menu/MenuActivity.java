@@ -47,6 +47,17 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        configurarBroadcastReciever();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +115,7 @@ public class MenuActivity extends AppCompatActivity {
         this.intent.putExtra("accion", this.ACCION_EVENTO);
         this.intent.putExtra("token", token);
 
-        // Configuro el boradcast para poder recibir el resultado de service
-        configurarBroadcastReciever();
+        // Configuro el boradcast en el onResume()
 
         // Inicio servicio
         startService(this.intent);

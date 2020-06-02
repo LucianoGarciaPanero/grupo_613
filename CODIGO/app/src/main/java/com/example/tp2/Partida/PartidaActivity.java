@@ -256,11 +256,14 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
                     giroscopio.setText(txt);
                     puntuacion.setText(Integer.toString(puntaje));
 
-                    if(puntaje>= puntosParaRomperLata){
+                    if(puntaje >= puntosParaRomperLata){
                         terminarPartida();
                     }
 
                     break;
+            }
+            if(puntaje >= puntosParaRomperLata){
+                terminarPartida();
             }
         }
     }
@@ -273,8 +276,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         super.onStop();
 
         Parar_Sensor();
-
-        unregisterReceiver(receiver);
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -315,6 +316,9 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         Parar_Sensor();
 
+        unregisterReceiver(receiver);
+        unregisterReceiver(receiverBackground);
+
 
     }
 
@@ -332,6 +336,12 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         super.onResume();
 
         Ini_Sensor();
+        configurarBroadcastReceiver();
+        // Configuracion del boradcast reciever
+        this.filtroBackground = new IntentFilter();
+        this.filtroBackground.addAction(MenuActivity.ACCION_EVENTO);
+        this.filtroBackground.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(this.receiverBackground, this.filtroBackground);
     }
 
     @Override
@@ -346,7 +356,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         receiver = new ReceptorTimer();
 
         intent = new Intent(PartidaActivity.this, Timer.class);
-        configurarBroadcastReceiver();
         intent.putExtra("Accion",ACTION_TIMER);
         intent.putExtra("tiempoRestante",tiempoRestante);
         startService(intent);
@@ -363,12 +372,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         this.intentBackground.putExtra("uri", MenuActivity.URI_EVENTO);
         this.intentBackground.putExtra("accion", MenuActivity.ACCION_EVENTO);
         this.intentBackground.putExtra("token", token);
-
-        // Configuracion del boradcast reciever
-        this.filtroBackground = new IntentFilter();
-        this.filtroBackground.addAction(MenuActivity.ACCION_EVENTO);
-        this.filtroBackground.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(this.receiverBackground, this.filtroBackground);
 
         // Inicio el servicio
         startService(this.intentBackground);
@@ -399,11 +402,10 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
     private void terminarPartida() {
 
-        // Hay que ver como setear estos valores
         int puntos = puntaje;
         float tiempo = 30000-tiempoRestante;
         float aceleracionMax = maxAceleracionAlcanzada;
-        //
+        this.partidaFinalizada = true;
 
         Gson json = new Gson();
 
@@ -418,7 +420,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         // Inicio activity
         startActivity(intentF);
 
-        this.partidaFinalizada = true;
         // Cierro esta activity
         finish();
     }

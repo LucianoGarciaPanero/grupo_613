@@ -47,6 +47,18 @@ public class IniciarSesionActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        configurarBroadcastReciever();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +117,7 @@ public class IniciarSesionActivity extends AppCompatActivity {
         this.intent.putExtra("uri", this.URI_INICIAR_SESION);
         this.intent.putExtra("accion", this.ACCION_INICIAR_SESION);
 
-        // Configuro el boradcast para poder recibir el resultado de service
-        configurarBroadcastReciever();
+        // Configuro el boradcast en el onResume()
 
         // Inicio servicio
         startService(this.intent);

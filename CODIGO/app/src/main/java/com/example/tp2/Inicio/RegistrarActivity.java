@@ -53,6 +53,18 @@ public class RegistrarActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        configurarBroadcastReciever();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar);
@@ -124,8 +136,7 @@ public class RegistrarActivity extends AppCompatActivity {
         this.intent.putExtra("uri", this.URI_REGISTRO);
         this.intent.putExtra("accion", this.ACCION_REGISTRAR);
 
-        // Configuro el boradcast para poder recibir el resultado de service
-        configurarBroadcastReciever();
+        // Configuro el receiver en el onResume
 
         // Inicio servicio
         startService(this.intent);

@@ -2,7 +2,8 @@ package com.example.tp2.Enums;
 
 public enum TipoEvento {
     ACCESO("AccesoCuenta"),
-    BACKGROUND("BACKGROUND");
+    BACKGROUND("BACKGROUND"),
+    RECORD("RECORD");
 
     private String texto;
 
