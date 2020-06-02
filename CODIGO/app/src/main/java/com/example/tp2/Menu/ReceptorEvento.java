@@ -30,7 +30,7 @@ public class ReceptorEvento extends BroadcastReceiver {
         respuestaServicioPostEvento = gson.fromJson(json, RespuestaServicioPostEvento.class);
         if(respuestaServicioPostEvento.getState().equals("success")) {
             Toast.makeText(context.getApplicationContext(),
-                    "Tipo evento: " +  respuestaServicioPostEvento.getEvent().getType_events()
+                    "Se ha registrado un evento" + "\nTipo evento: " +  respuestaServicioPostEvento.getEvent().getType_events()
                             +"\nNro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(), Toast.LENGTH_SHORT).show();
 
         }

@@ -3,7 +3,8 @@ package com.example.tp2.Enums;
 public enum TipoEvento {
     ACCESO("AccesoCuenta"),
     BACKGROUND("BACKGROUND"),
-    RECORD("RECORD");
+    RECORD("RECORD"),
+    SENSOR("SENSOR");
 
     private String texto;
 

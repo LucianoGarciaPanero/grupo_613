@@ -58,9 +58,11 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
     private int                         puntosParaRomperLata;
     private int                         maxAceleracionAlcanzada;
 
+    // Para la comunicación con el servicio de post evento
     private Intent intentBackground;
-    private IntentFilter filtroBackground;
-    private ReceptorEvento receiverBackground = new ReceptorEvento();
+    private Intent intentSensores;
+    private IntentFilter filtroPostServicio;
+    private ReceptorEvento receiverPostServicio = new ReceptorEvento();
 
     DecimalFormat dosdecimales = new DecimalFormat("###.###");
 
@@ -135,6 +137,24 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY), SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_GAME);
+
+        // Mando un post de servicio para indiciar que hubo un acceso de la cuenta
+        EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.SENSOR.toString(), EstadoEvento.ACTIVO.toString(),
+                "Se iniciaron los snesores");
+        Gson json = new Gson();
+        String jsonEvento = json.toJson(eventoPost);
+
+        // Armo el intent y se lo mando al service
+        this.intent = new Intent(PartidaActivity.this, ServicioPostEvento.class);
+        this.intent.putExtra("json", jsonEvento);
+        this.intent.putExtra("uri", MenuActivity.URI_EVENTO);
+        this.intent.putExtra("accion", MenuActivity.ACCION_EVENTO);
+        this.intent.putExtra("token", token);
+
+        // Configuro el boradcast en el onResume()
+
+        // Inicio servicio
+        startService(this.intent);
     }
 
     private void Parar_Sensor(){
@@ -297,6 +317,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         stopService(intent);
 
+
         if(partidaFinalizada){
             SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
@@ -306,6 +327,10 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         if (this.intentBackground != null) {
             stopService(this.intentBackground);
+        }
+
+        if (this.intentSensores != null) {
+            stopService(this.intentSensores);
         }
     }
 
@@ -317,7 +342,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         Parar_Sensor();
 
         unregisterReceiver(receiver);
-        unregisterReceiver(receiverBackground);
+        unregisterReceiver(this.receiverPostServicio);
 
 
     }
@@ -337,11 +362,12 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         Ini_Sensor();
         configurarBroadcastReceiver();
-        // Configuracion del boradcast reciever
-        this.filtroBackground = new IntentFilter();
-        this.filtroBackground.addAction(MenuActivity.ACCION_EVENTO);
-        this.filtroBackground.addCategory(Intent.CATEGORY_DEFAULT);
-        registerReceiver(this.receiverBackground, this.filtroBackground);
+
+        // Configuracion del boradcast reciever para el servicio post event
+        this.filtroPostServicio = new IntentFilter();
+        this.filtroPostServicio.addAction(MenuActivity.ACCION_EVENTO);
+        this.filtroPostServicio.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(this.receiverPostServicio, this.filtroPostServicio);
     }
 
     @Override
