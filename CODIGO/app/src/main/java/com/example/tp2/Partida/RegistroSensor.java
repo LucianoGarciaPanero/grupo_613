@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -16,7 +18,11 @@ import android.util.Log;
 import android.view.Surface;
 import android.widget.TextView;
 
+import com.example.tp2.Enums.Dificultad;
+import com.example.tp2.Enums.NombreColor;
+import com.example.tp2.Menu.Resultado;
 import com.example.tp2.R;
+import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 
@@ -25,18 +31,23 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
     private final String                ACTION_TIMER = "com.example.tp2.intent.action.ACTION_TIMER";
     private SensorManager               mSensorManager;
     public  IntentFilter                filtro;
-    private ReceptorTimer               receiver = new ReceptorTimer();
+    private ReceptorTimer               receiver;
     private Intent                      intent;
     private TextView                    acelerometro;
     private TextView                    giroscopio;
-    private TextView                    gravedad;
     private TextView                    rotada;
     private TextView                    timer;
     private Integer                     rotacion; //0 vertical, 1 rotado a izquierda, 2 rotado a derecha
     private TextView                    puntuacion;
-    private Double[]                    valorCoordenada   = new Double[2]; //pos 0 X, pos 1 Y
+    private Double[]                    valorCoordenadaAcelerometro   = new Double[2]; //pos 0 X, pos 1 Y
+    private Double[]                    valorCoordenadaGiroscopio     = new Double[2]; //pos 0 X, pos 1 Y
     private int                         puntaje;
-
+    private String                      token;
+    private String                      dificultad;
+    private long                        tiempoRestante;
+    private boolean                     partidaFinalizada;
+    private int                         puntosParaRomperLata;
+    private int                         maxAceleracionAlcanzada;
 
     DecimalFormat dosdecimales = new DecimalFormat("###.###");
 
@@ -47,21 +58,53 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
         acelerometro    = (TextView) findViewById(R.id.acelerometro);
         giroscopio      = (TextView) findViewById(R.id.giroscopio);
-        gravedad        = (TextView) findViewById(R.id.gravedad);
         rotada          = (TextView) findViewById(R.id.rotada);
         puntuacion      = (TextView) findViewById(R.id.puntuacion);
         timer           = (TextView) findViewById(R.id.timer);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         rotacion = 0;
-        valorCoordenada[0] = 0.0;
-        valorCoordenada[1] = 0.0;
-        puntaje = 0;
+        valorCoordenadaAcelerometro[0] = 0.0;
+        valorCoordenadaAcelerometro[1] = 0.0;
+        valorCoordenadaGiroscopio[0] = 0.0;
+        valorCoordenadaGiroscopio[1] = 0.0;
+        maxAceleracionAlcanzada = 0;
 
-        intent = new Intent(RegistroSensor.this, Timer.class);
-        configurarBroadcastReceiver();
-        intent.putExtra("Accion",ACTION_TIMER);
-        startService(intent);
+
+        partidaFinalizada=false;
+
+
+        // Hago la configuración dependiendo de lo que me llego
+        Gson json = new Gson();
+        ConfiguracionDePartida config;
+
+
+        Intent intentIniciador = getIntent();
+        String jsonConfig = intentIniciador.getExtras().getString("json");
+        config = json.fromJson(jsonConfig, ConfiguracionDePartida.class);
+
+        // Recupero el token
+        this.token = config.getToken();
+
+        // Pongo el fondo de color
+        String nombreColor = config.getColorFondo();
+        if( nombreColor.equals(NombreColor.BLANCO.toString())) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.WHITE));
+        } else if (nombreColor.equals(NombreColor.AMARILO.toString())) {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.YELLOW));
+        } else {
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.RED));
+        }
+
+        // Logica para la dificultad
+        this.dificultad = config.getDificultad();
+        if( dificultad.toString().equals(Dificultad.DIFICIL.toString())) {
+            this.puntosParaRomperLata = 2500;
+        } else if (dificultad.equals(Dificultad.MEDIO.toString())) {
+            this.puntosParaRomperLata = 1500;
+        } else {
+            this.puntosParaRomperLata = 500;
+        }
     }
 
     private void configurarBroadcastReceiver(){
@@ -83,7 +126,8 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE));
         mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY));
         mSensorManager.unregisterListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR));
-    }
+        }
+
 
     public void onAccuracyChanged(Sensor sensor, int accuracy)
     {
@@ -125,30 +169,45 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
                         txt += "x: " + dosdecimales.format(event.values[0]) + " m/seg2  ";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " m/seg2  ";
                         txt += "z: " + dosdecimales.format(event.values[2]) + " m/seg2 \n";
-                        if( valorCoordenada[0] == 0) {
-                            valorCoordenada[0] = (double) event.values[0];
+                        if( valorCoordenadaAcelerometro[0] == 0) {
+                            valorCoordenadaAcelerometro[0] = (double) event.values[0];
                         }
                         else{
-                            puntaje+= ((int) Math.abs(event.values[0]-valorCoordenada[0]))/17;
-                            valorCoordenada[0] = (double) event.values[0];
+                            puntaje+= ((int) Math.abs(event.values[0]-valorCoordenadaAcelerometro[0]))/6;
+                            valorCoordenadaAcelerometro[0] = (double) event.values[0];
+
                         }
+
+                        if(event.values[0]> maxAceleracionAlcanzada){
+                            maxAceleracionAlcanzada = (int) event.values[0];
+                        }
+
 
                     } else {
                         txt += "x: " + dosdecimales.format(event.values[0]) + " m/seg2\t\t";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " m/seg2 \n";
                         txt += "z: " + dosdecimales.format(event.values[2]) + " m/seg2 \n";
-                        if( valorCoordenada[1] == 0) {
-                            valorCoordenada[1] = (double) event.values[1];
+                        if( valorCoordenadaAcelerometro[1] == 0) {
+                            valorCoordenadaAcelerometro[1] = (double) event.values[1];
                         }
                         else{
-                            puntaje+= ((int) Math.abs(event.values[1]-valorCoordenada[1]))/10;
-                            valorCoordenada[1] = (double) event.values[1];
+                            puntaje+= ((int) Math.abs(event.values[1]-valorCoordenadaAcelerometro[1]))/5;
+                            valorCoordenadaAcelerometro[1] = (double) event.values[1];
+                        }
+
+                        if(event.values[1]> maxAceleracionAlcanzada){
+                            maxAceleracionAlcanzada = (int) event.values[1];
                         }
 
                     }
 
                     acelerometro.setText(txt);
-                    puntuacion.setText(""+puntaje);
+                    puntuacion.setText("Puntuaciom: "+puntaje);
+
+                    if(puntaje>= puntosParaRomperLata){
+                       terminarPartida();
+                   }
+
                     break;
 
                 case Sensor.TYPE_GYROSCOPE:
@@ -157,28 +216,35 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
                         txt += "x: " + dosdecimales.format(event.values[0]) + " deg/s  ";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " deg/s  ";
                         txt += "z: " + dosdecimales.format(event.values[2]) + " deg/s \n";
+                        if( valorCoordenadaGiroscopio[1] == 0) {
+                            valorCoordenadaGiroscopio[1] = (double) event.values[1];
+                        }
+                        else{
+                            puntaje+= ((int) Math.abs(event.values[1]-valorCoordenadaGiroscopio[0]))/17;
+                            valorCoordenadaGiroscopio[1] = (double) event.values[1];
+                        }
                     }
                     else {
                         txt += "x: " + dosdecimales.format(event.values[0]) + " deg/s\t\t";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " deg/s\n";
                         txt += "z: " + dosdecimales.format(event.values[2]) + " deg/s \n";
+                        if( valorCoordenadaGiroscopio[0] == 0) {
+                            valorCoordenadaGiroscopio[0] = (double) event.values[0];
+                        }
+                        else{
+                            puntaje+= ((int) Math.abs(event.values[0]-valorCoordenadaGiroscopio[0]))/17;
+                            valorCoordenadaGiroscopio[0] = (double) event.values[0];
+                        }
+
                     }
                     giroscopio.setText(txt);
-                    break;
+                    puntuacion.setText("Puntuaciom: "+puntaje);
 
-                case Sensor.TYPE_GRAVITY :
-                    txt += "Gravedad:\n";
-                    if(rotacion == 1 || rotacion ==2){
-                        txt += "x: " + dosdecimales.format(event.values[0]) + "  ";
-                        txt += "y: " + dosdecimales.format(event.values[1]) + "  ";
-                        txt += "z: " + dosdecimales.format(event.values[2]) + "\n";
+                    if(puntaje>= puntosParaRomperLata){
+                        terminarPartida();
                     }
-                    else {
-                        txt += "x: " + dosdecimales.format(event.values[0]) + "\t\t";
-                        txt += "y: " + dosdecimales.format(event.values[1]) + "\n";
-                        txt += "z: " + dosdecimales.format(event.values[2]) + "\n";
-                    }
-                    gravedad.setText(txt);
+
+                    break;
             }
         }
     }
@@ -192,10 +258,14 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
         Parar_Sensor();
 
+        unregisterReceiver(receiver);
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putInt("puntaje",puntaje);
+        editor.putLong("timer",tiempoRestante);
+        editor.putInt("maxAcel",maxAceleracionAlcanzada);
+
         editor.apply();
 
 
@@ -208,10 +278,14 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
         Parar_Sensor();
 
-        if(intent!= null){
-            stopService(intent);
-        }
+        stopService(intent);
 
+        if(partidaFinalizada){
+            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.clear();
+            editor.apply();
+        }
     }
 
     @Override
@@ -240,16 +314,22 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         Ini_Sensor();
     }
 
-    protected static void actualizarTimer(long tiempoRestante){
-
-    }
-
     @Override
     protected void onStart(){
         super.onStart();
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         puntaje = prefs.getInt("puntaje",0);
+        tiempoRestante = prefs.getLong("timer",30000);
+        maxAceleracionAlcanzada = prefs.getInt("maxAcel",maxAceleracionAlcanzada);
+
+        receiver = new ReceptorTimer();
+
+        intent = new Intent(RegistroSensor.this, Timer.class);
+        configurarBroadcastReceiver();
+        intent.putExtra("Accion",ACTION_TIMER);
+        intent.putExtra("tiempoRestante",tiempoRestante);
+        startService(intent);
 
     }
 
@@ -260,15 +340,46 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
             String tipo = intent.getStringExtra("tipo");
             String txt = "";
             if( tipo.equals(Timer.PASO_SEG)){
-                txt+= "Faltan: "+intent.getLongExtra("tiempoRestante",0) + " segs";
+                long tiempRestante = intent.getLongExtra("tiempoRestante",0);
+                txt+= "Faltan: "+ (tiempRestante/1000) + " segs";
                 timer.setText(txt);
+                setTiempoRestante(tiempRestante);
             }
             else{
-                finish();
+                terminarPartida();
             }
         }
     }
 
+    public void setTiempoRestante(long tiempo){
+        this.tiempoRestante = tiempo;
+    }
+
+    private void terminarPartida() {
+
+        // Hay que ver como setear estos valores
+        int puntos = puntaje;
+        float tiempo = 30-tiempoRestante;
+        float aceleracionMax = maxAceleracionAlcanzada;
+        //
+
+        Gson json = new Gson();
+
+        Resultado resultado = new Resultado(puntos, tiempo, aceleracionMax, this.dificultad);
+        String jsonResultado = json.toJson(resultado);
+
+        // Armo el intent
+        Intent intentF = new Intent(RegistroSensor.this, FinPartidaActivity.class);
+        intentF.putExtra("json", jsonResultado);
+        intentF.putExtra("token", this.token);
+
+        // Inicio activity
+        startActivity(intentF);
+
+        this.partidaFinalizada = true;
+        // Cierro esta activity
+        finish();
+    }
 
 
 }
