@@ -140,21 +140,21 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         // Mando un post de servicio para indiciar que hubo un acceso de la cuenta
         EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.SENSOR.toString(), EstadoEvento.ACTIVO.toString(),
-                "Se iniciaron los snesores");
+                "Se iniciaron los sensores");
         Gson json = new Gson();
         String jsonEvento = json.toJson(eventoPost);
 
         // Armo el intent y se lo mando al service
-        this.intent = new Intent(PartidaActivity.this, ServicioPostEvento.class);
-        this.intent.putExtra("json", jsonEvento);
-        this.intent.putExtra("uri", MenuActivity.URI_EVENTO);
-        this.intent.putExtra("accion", MenuActivity.ACCION_EVENTO);
-        this.intent.putExtra("token", token);
+        this.intentSensores = new Intent(PartidaActivity.this, ServicioPostEvento.class);
+        this.intentSensores.putExtra("json", jsonEvento);
+        this.intentSensores.putExtra("uri", MenuActivity.URI_EVENTO);
+        this.intentSensores.putExtra("accion", MenuActivity.ACCION_EVENTO);
+        this.intentSensores.putExtra("token", token);
 
         // Configuro el boradcast en el onResume()
 
         // Inicio servicio
-        startService(this.intent);
+        startService(this.intentSensores);
     }
 
     private void Parar_Sensor(){
@@ -292,7 +292,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
     }
 
 
-
     @Override
     protected void onStop()
     {
@@ -318,8 +317,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         Parar_Sensor();
 
         stopService(intent);
-
-
 
         if (this.intentBackground != null) {
             stopService(this.intentBackground);
