@@ -26,7 +26,7 @@ import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 
-public class RegistroSensor extends AppCompatActivity implements SensorEventListener{
+public class PartidaActivity extends AppCompatActivity implements SensorEventListener{
 
     private final String                ACTION_TIMER = "com.example.tp2.intent.action.ACTION_TIMER";
     private SensorManager               mSensorManager;
@@ -325,7 +325,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
         receiver = new ReceptorTimer();
 
-        intent = new Intent(RegistroSensor.this, Timer.class);
+        intent = new Intent(PartidaActivity.this, Timer.class);
         configurarBroadcastReceiver();
         intent.putExtra("Accion",ACTION_TIMER);
         intent.putExtra("tiempoRestante",tiempoRestante);
@@ -359,7 +359,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
         // Hay que ver como setear estos valores
         int puntos = puntaje;
-        float tiempo = 30-tiempoRestante;
+        float tiempo = 30000-tiempoRestante;
         float aceleracionMax = maxAceleracionAlcanzada;
         //
 
@@ -369,7 +369,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         String jsonResultado = json.toJson(resultado);
 
         // Armo el intent
-        Intent intentF = new Intent(RegistroSensor.this, FinPartidaActivity.class);
+        Intent intentF = new Intent(PartidaActivity.this, FinPartidaActivity.class);
         intentF.putExtra("json", jsonResultado);
         intentF.putExtra("token", this.token);
 
