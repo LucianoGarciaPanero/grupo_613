@@ -24,7 +24,7 @@ public class IniciarSesionActivity extends AppCompatActivity {
     private final String URI_INICIAR_SESION = "http://so-unlam.net.ar/api/api/login";
     private final String ACCION_INICIAR_SESION = "com.example.tp2.intent.action.INICIAR_SESION";
     // Esta variable es para que podamos cambiar de entorno facilmente
-    public static final String ENV = "TEST"; // ENV = ["TEST"/"DEV"]
+    public static final String ENV = "DEV"; // ENV = ["TEST"/"DEV"]
 
     // Variables para la comunicacion con el service
     public IntentFilter filtro;

@@ -26,7 +26,9 @@ public class ReceptorEvento extends BroadcastReceiver {
             return;
         }
 
-        // Si no es un error lo transformo para poder analizarlo
+        //Descomentar este codigo para obtener la respuesta de un post de servicio al webService por pantalla.
+
+        /*
         respuestaServicioPostEvento = gson.fromJson(json, RespuestaServicioPostEvento.class);
         if(respuestaServicioPostEvento.getState().equals("success")) {
             Toast.makeText(context.getApplicationContext(),
@@ -34,5 +36,7 @@ public class ReceptorEvento extends BroadcastReceiver {
                             +"\nNro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(), Toast.LENGTH_SHORT).show();
 
         }
+
+         */
     }
 }
