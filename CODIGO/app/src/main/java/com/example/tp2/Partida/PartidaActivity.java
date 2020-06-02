@@ -376,7 +376,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         puntaje = prefs.getInt("puntaje",0);
-        tiempoRestante = prefs.getLong("timer",30000);
+        tiempoRestante = prefs.getLong("timer",31000) - 1000;
         maxAceleracionAlcanzada = prefs.getInt("maxAcel",maxAceleracionAlcanzada);
 
         receiver = new ReceptorTimer();
