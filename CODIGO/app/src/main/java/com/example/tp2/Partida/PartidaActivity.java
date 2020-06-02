@@ -299,13 +299,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         Parar_Sensor();
 
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putInt("puntaje",puntaje);
-        editor.putLong("timer",tiempoRestante);
-        editor.putInt("maxAcel",maxAceleracionAlcanzada);
-
-        editor.apply();
 
     }
 
@@ -337,9 +330,17 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         unregisterReceiver(receiver);
         unregisterReceiver(this.receiverPostServicio);
 
+        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putInt("puntaje",puntaje);
+        editor.putLong("timer",tiempoRestante);
+        editor.putInt("maxAcel",maxAceleracionAlcanzada);
+
+        editor.apply();
+
         if(partidaFinalizada){
-            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-            SharedPreferences.Editor edit = prefs.edit();
+            SharedPreferences pref = getSharedPreferences("prefs", MODE_PRIVATE);
+            SharedPreferences.Editor edit = pref.edit();
             edit.clear();
             edit.apply();
             terminarPartida();
