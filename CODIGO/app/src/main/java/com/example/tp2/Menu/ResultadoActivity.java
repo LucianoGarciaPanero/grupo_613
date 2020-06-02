@@ -24,7 +24,7 @@ public class ResultadoActivity extends AppCompatActivity {
     private TextView labelDificultad;
     private TextView dificultad;
     private TextView labelError;
-    private Spinner comboDificultad;
+    private Spinner comboDif;
     private Button buttonVolver;
 
     private String accion;
@@ -40,14 +40,14 @@ public class ResultadoActivity extends AppCompatActivity {
         this.labelSeleccioneDificultad = findViewById(R.id.labelSeleccioneDificultad);
         this.puntos = findViewById(R.id.puntos);
         this.tiempo = findViewById(R.id.tiempo);
-        this.aceleracionMaxima = findViewById(R.id.aceleracionMax);
+        this.aceleracionMaxima = findViewById(R.id.aceleracionMaxima);
         this.labelDificultad = findViewById(R.id.labelDificultad);
         this.dificultad = findViewById(R.id.dificultad);
         this.labelError = findViewById(R.id.labelError);
 
-        this.comboDificultad = findViewById(R.id.comboDificultad);
+        this.comboDif = findViewById(R.id.comboDif);
         ArrayAdapter<CharSequence> adapterDificultad = ArrayAdapter.createFromResource(this, R.array.dificultades, android.R.layout.simple_spinner_item);
-        this.comboDificultad.setAdapter(adapterDificultad);
+        this.comboDif.setAdapter(adapterDificultad);
 
         this.buttonVolver = findViewById(R.id.buttonVolver);
 
@@ -58,36 +58,39 @@ public class ResultadoActivity extends AppCompatActivity {
             }
         });
 
-        this.comboDificultad.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        this.comboDif.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                resultado = connector.obtenerMejorResultado(comboDificultad.getSelectedItem().toString());
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                resultado = connector.obtenerMejorResultado(comboDif.getItemAtPosition(position).toString());
                 mostrarResultado(resultado);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                return;
             }
         });
 
+        this.connector = new ConectorBDResultados(getSharedPreferences(ConectorBDResultados.NOMBRE_BD, Context.MODE_PRIVATE));
         this.accion = getIntent().getExtras().getString("accion");
+
         if(this.accion.equals(MenuActivity.MEJOR_RESULTADO)) {
             this.labelTipoResultado.setText("Este es el mejor resultado obtenido jamas");
             this.labelDificultad.setVisibility(View.GONE);
             this.dificultad.setVisibility(View.GONE);
-            this.resultado = connector.obtenerMejorResultado(this.comboDificultad.getSelectedItem().toString());
-            mostrarResultado(this.resultado);
         } else {
             this.labelTipoResultado.setText("Este es el ultimo resultado obtenido");
             this.labelSeleccioneDificultad.setVisibility(View.GONE);
-            this.comboDificultad.setVisibility(View.GONE);
+            this.comboDif.setVisibility(View.GONE);
             this.resultado = connector.obtenerUltimoResultado();
             mostrarResultado(this.resultado);
         }
-
-        this.connector = new ConectorBDResultados(getSharedPreferences(ConectorBDResultados.NOMBRE_BD, Context.MODE_PRIVATE));
     }
 
     private void mostrarResultado(Resultado resultado) {
         if (resultado != null) {
             this.puntos.setText(Integer.toString(resultado.getPuntos()));
-            this.tiempo.setText(Float.toString(resultado.getTiempo()) + " seg");
+            this.tiempo.setText(Float.toString(resultado.getTiempo()/1000) + " seg");
             this.aceleracionMaxima.setText(Float.toString(resultado.getAcleracionMax()) + " m/seg2");
             this.dificultad.setText(resultado.getDificultad());
         } else {

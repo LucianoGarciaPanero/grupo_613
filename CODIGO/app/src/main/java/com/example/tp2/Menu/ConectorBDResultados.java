@@ -34,9 +34,9 @@ public class ConectorBDResultados {
     public void guardarMejorResultado(Resultado resultado){
         Gson json = new Gson();
         SharedPreferences.Editor editor = preference.edit();
-        if (resultado.getDificultad().equals(Dificultad.FACIL)) {
+        if (resultado.getDificultad().equals(Dificultad.FACIL.toString())) {
             editor.putString("mejorFacil", json.toJson(resultado));
-        } else if (resultado.getDificultad().equals(Dificultad.MEDIO)) {
+        } else if (resultado.getDificultad().equals(Dificultad.MEDIO.toString())) {
             editor.putString("mejorMedio", json.toJson(resultado));
         } else {
             editor.putString("mejorDificil", json.toJson(resultado));
@@ -60,9 +60,9 @@ public class ConectorBDResultados {
         Resultado resultado;
         String jsonResultado;
 
-        if (dificultad.equals(Dificultad.FACIL)) {
+        if (dificultad.equals(Dificultad.FACIL.toString())) {
             jsonResultado = preference.getString("mejorFacil", "");
-        } else if (dificultad.equals(Dificultad.MEDIO)) {
+        } else if (dificultad.equals(Dificultad.MEDIO.toString())) {
             jsonResultado = preference.getString("mejorMedio", "");
         } else {
             jsonResultado = preference.getString("mejorDificil", "");

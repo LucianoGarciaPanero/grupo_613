@@ -35,7 +35,7 @@ public class ConfigurarPartidaActivity extends AppCompatActivity {
         this.buttonIniciarPartida = findViewById(R.id.buttonIniciarPartida);
         this.buttonVolver = findViewById(R.id.buttonVolver);
 
-        this.comboDificultad = findViewById(R.id.comboDificultad);
+        this.comboDificultad = findViewById(R.id.comboDif);
         ArrayAdapter<CharSequence> adapterDificultad = ArrayAdapter.createFromResource(this, R.array.dificultades, android.R.layout.simple_spinner_item);
         this.comboDificultad.setAdapter(adapterDificultad);
 
