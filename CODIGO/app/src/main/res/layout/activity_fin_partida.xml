@@ -110,7 +110,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".3" />
+        app:layout_constraintGuide_percent=".25" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline105"
@@ -124,7 +124,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".41" />
+        app:layout_constraintGuide_percent=".36" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline107"
@@ -138,7 +138,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".52" />
+        app:layout_constraintGuide_percent=".47" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline109"
@@ -152,7 +152,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintGuide_percent=".63" />
+        app:layout_constraintGuide_percent=".57" />
 
     <TextView
         android:id="@+id/labelPuntos"
@@ -181,8 +181,8 @@
 
     <TextView
         android:id="@+id/labelAceleracionMax"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="149dp"
+        android:layout_height="38dp"
         android:text="Aceleracion maxima"
         android:textAlignment="center"
         app:autoSizeTextType="none"
