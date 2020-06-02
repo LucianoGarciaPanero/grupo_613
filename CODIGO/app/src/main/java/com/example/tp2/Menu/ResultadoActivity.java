@@ -62,7 +62,7 @@ public class ResultadoActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 resultado = connector.obtenerMejorResultado(comboDif.getItemAtPosition(position).toString());
-                mostrarResultado(resultado);
+                mostrarResultado(resultado,"Ops, parece que aun no has jugado una partida en esta dificultad");
             }
 
             @Override
@@ -83,18 +83,26 @@ public class ResultadoActivity extends AppCompatActivity {
             this.labelSeleccioneDificultad.setVisibility(View.GONE);
             this.comboDif.setVisibility(View.GONE);
             this.resultado = connector.obtenerUltimoResultado();
-            mostrarResultado(this.resultado);
+            mostrarResultado(this.resultado,"Ops, parece que aun no has jugado una partida");
         }
     }
 
-    private void mostrarResultado(Resultado resultado) {
+    private void mostrarResultado(Resultado resultado, String msjEror) {
+        // Seteamos todos los label en blanco
+        this.puntos.setText("");
+        this.tiempo.setText("");
+        this.aceleracionMaxima.setText("");
+        this.dificultad.setText("");
+        this.labelError.setText("");
+
+
         if (resultado != null) {
             this.puntos.setText(Integer.toString(resultado.getPuntos()));
             this.tiempo.setText(Float.toString(resultado.getTiempo()/1000) + " seg");
             this.aceleracionMaxima.setText(Float.toString(resultado.getAcleracionMax()) + " m/seg2");
             this.dificultad.setText(resultado.getDificultad());
         } else {
-            this.labelError.setText("Ops, parece que aun no has jugado un partida");
+            this.labelError.setText(msjEror);
         }
 
     }
