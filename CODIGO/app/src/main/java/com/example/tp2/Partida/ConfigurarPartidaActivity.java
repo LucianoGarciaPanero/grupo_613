@@ -93,7 +93,7 @@ public class ConfigurarPartidaActivity extends AppCompatActivity {
         String jsonPartida = json.toJson(config);
 
         //Creo el intent y lo mando
-        Intent intentP = new Intent(ConfigurarPartidaActivity.this, RegistroSensor.class);
+        Intent intentP = new Intent(ConfigurarPartidaActivity.this, PartidaActivity.class);
         intentP.putExtra("json", jsonPartida);
         startActivity(intentP);
         finish();

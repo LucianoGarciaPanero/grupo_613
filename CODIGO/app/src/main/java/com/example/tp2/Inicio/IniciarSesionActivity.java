@@ -47,6 +47,18 @@ public class IniciarSesionActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        configurarBroadcastReciever();
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,8 +117,7 @@ public class IniciarSesionActivity extends AppCompatActivity {
         this.intent.putExtra("uri", this.URI_INICIAR_SESION);
         this.intent.putExtra("accion", this.ACCION_INICIAR_SESION);
 
-        // Configuro el boradcast para poder recibir el resultado de service
-        configurarBroadcastReciever();
+        // Configuro el boradcast en el onResume()
 
         // Inicio servicio
         startService(this.intent);
@@ -135,14 +146,14 @@ public class IniciarSesionActivity extends AppCompatActivity {
 
             // Si es un error termino el método
             if(json.equals(ServicioPostUsuario.ERROR)) {
-                Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Si no es un error lo transformo para poder analizarlo
             respuestaServicioPostUsuario = gson.fromJson(json, RespuestaServicioPostUsuario.class);
             if(respuestaServicioPostUsuario.getState().equals("success")) {
-                Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
                 Intent intentM = new Intent(IniciarSesionActivity.this, MenuActivity.class);
                 intentM.putExtra("token", respuestaServicioPostUsuario.getToken());
                 intentM.putExtra("origen", "inicio");

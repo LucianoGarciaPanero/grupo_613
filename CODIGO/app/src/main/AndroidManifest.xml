@@ -23,7 +23,7 @@
         <service android:name=".Menu.ServicioPostEvento" />
 
         <activity android:name=".Menu.ResultadoActivity" />
-        <activity android:name=".Partida.RegistroSensor" />
+        <activity android:name=".Partida.PartidaActivity" />
         <activity android:name=".Inicio.RegistrarActivity" />
         <activity android:name=".Menu.MenuActivity" />
         <activity android:name=".Inicio.IniciarSesionActivity">
@@ -37,7 +37,7 @@
         <receiver android:name=".Inicio.RegistrarActivity$ReceptorRegistrar" />
         <receiver android:name=".Inicio.IniciarSesionActivity$ReceptorIniciarSesion" />
         <receiver android:name=".Menu.MenuActivity$ReceptorEvento" />
-        <receiver android:name=".Partida.RegistroSensor$ReceptorTimer" />
+        <receiver android:name=".Partida.PartidaActivity$ReceptorTimer" />
     </application>
 
 </manifest>

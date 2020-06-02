@@ -26,8 +26,8 @@ public class MenuActivity extends AppCompatActivity {
     // Constantes
     public final static  String ULTIMO_RESULTADO = "ULTIMO_RESULTADO";
     public final static String MEJOR_RESULTADO = "MEJOR_RESULTADO";
-    private final static String URI_EVENTO = "http://so-unlam.net.ar/api/api/event";
-    private final static String ACCION_EVENTO = "com.example.tp2.intent.action.ACCION_EVENTO";
+    public final static String URI_EVENTO = "http://so-unlam.net.ar/api/api/event";
+    public final static String ACCION_EVENTO = "com.example.tp2.intent.action.ACCION_EVENTO";
 
     // Objetos de la GUI
     private Button buttonUltimosResultados;
@@ -47,6 +47,17 @@ public class MenuActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        configurarBroadcastReciever();
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,8 +115,7 @@ public class MenuActivity extends AppCompatActivity {
         this.intent.putExtra("accion", this.ACCION_EVENTO);
         this.intent.putExtra("token", token);
 
-        // Configuro el boradcast para poder recibir el resultado de service
-        configurarBroadcastReciever();
+        // Configuro el boradcast en el onResume()
 
         // Inicio servicio
         startService(this.intent);
@@ -132,34 +142,5 @@ public class MenuActivity extends AppCompatActivity {
         Intent intentP = new Intent(MenuActivity.this, ResultadoActivity.class);
         intentP.putExtra("accion", accion);
         startActivity(intentP);
-    }
-
-    public class ReceptorEvento extends BroadcastReceiver {
-
-        public ReceptorEvento() {
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            // Recibo lo que me llega del intent
-            Gson gson = new Gson();
-            RespuestaServicioPostEvento respuestaServicioPostEvento;
-            String json = intent.getStringExtra("json");
-
-            // Si es un error termino el método
-            if(json.equals(ServicioPostUsuario.ERROR)) {
-                Toast.makeText(context.getApplicationContext(), "No se pudo registrar el evento", Toast.LENGTH_LONG).show();
-                return;
-            }
-
-            // Si no es un error lo transformo para poder analizarlo
-            respuestaServicioPostEvento = gson.fromJson(json, RespuestaServicioPostEvento.class);
-            if(respuestaServicioPostEvento.getState().equals("success")) {
-                Toast.makeText(context.getApplicationContext(),
-                        "Tipo evento: " +  respuestaServicioPostEvento.getEvent().getType_events()
-                                +"\nNro grupo: " + respuestaServicioPostEvento.getEvent().getGroup(), Toast.LENGTH_SHORT).show();
-
-            }
-        }
     }
 }

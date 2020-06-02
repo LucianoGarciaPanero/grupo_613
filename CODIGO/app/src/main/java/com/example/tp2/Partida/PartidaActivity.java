@@ -14,19 +14,27 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.Surface;
 import android.widget.TextView;
 
 import com.example.tp2.Enums.Dificultad;
+import com.example.tp2.Enums.EstadoEvento;
 import com.example.tp2.Enums.NombreColor;
+import com.example.tp2.Enums.TipoEvento;
+import com.example.tp2.Inicio.IniciarSesionActivity;
+import com.example.tp2.Menu.EventoPost;
+import com.example.tp2.Menu.MenuActivity;
+import com.example.tp2.Menu.ReceptorEvento;
 import com.example.tp2.Menu.Resultado;
+import com.example.tp2.Menu.ServicioPostEvento;
 import com.example.tp2.R;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 
-public class RegistroSensor extends AppCompatActivity implements SensorEventListener{
+public class PartidaActivity extends AppCompatActivity implements SensorEventListener{
 
     private final String                ACTION_TIMER = "com.example.tp2.intent.action.ACTION_TIMER";
     private SensorManager               mSensorManager;
@@ -37,6 +45,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
     private TextView                    giroscopio;
     private TextView                    rotada;
     private TextView                    timer;
+    private TextView                    puntuacionObjetivo;
     private Integer                     rotacion; //0 vertical, 1 rotado a izquierda, 2 rotado a derecha
     private TextView                    puntuacion;
     private Double[]                    valorCoordenadaAcelerometro   = new Double[2]; //pos 0 X, pos 1 Y
@@ -49,17 +58,24 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
     private int                         puntosParaRomperLata;
     private int                         maxAceleracionAlcanzada;
 
+    // Para la comunicación con el servicio de post evento
+    private Intent intentBackground;
+    private Intent intentSensores;
+    private IntentFilter filtroPostServicio;
+    private ReceptorEvento receiverPostServicio = new ReceptorEvento();
+
     DecimalFormat dosdecimales = new DecimalFormat("###.###");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro_sensor);
+        setContentView(R.layout.activity_partida);
 
         acelerometro    = (TextView) findViewById(R.id.acelerometro);
         giroscopio      = (TextView) findViewById(R.id.giroscopio);
         rotada          = (TextView) findViewById(R.id.rotada);
         puntuacion      = (TextView) findViewById(R.id.puntuacion);
+        puntuacionObjetivo      = (TextView) findViewById(R.id.puntuacionObjetivo);
         timer           = (TextView) findViewById(R.id.timer);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -105,6 +121,8 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         } else {
             this.puntosParaRomperLata = 500;
         }
+
+        this.puntuacionObjetivo.setText(Integer.toString(this.puntosParaRomperLata));
     }
 
     private void configurarBroadcastReceiver(){
@@ -119,6 +137,24 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_GRAVITY), SensorManager.SENSOR_DELAY_GAME);
         mSensorManager.registerListener(this, mSensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR), SensorManager.SENSOR_DELAY_GAME);
+
+        // Mando un post de servicio para indiciar que hubo un acceso de la cuenta
+        EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.SENSOR.toString(), EstadoEvento.ACTIVO.toString(),
+                "Se iniciaron los snesores");
+        Gson json = new Gson();
+        String jsonEvento = json.toJson(eventoPost);
+
+        // Armo el intent y se lo mando al service
+        this.intent = new Intent(PartidaActivity.this, ServicioPostEvento.class);
+        this.intent.putExtra("json", jsonEvento);
+        this.intent.putExtra("uri", MenuActivity.URI_EVENTO);
+        this.intent.putExtra("accion", MenuActivity.ACCION_EVENTO);
+        this.intent.putExtra("token", token);
+
+        // Configuro el boradcast en el onResume()
+
+        // Inicio servicio
+        startService(this.intent);
     }
 
     private void Parar_Sensor(){
@@ -143,7 +179,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ROTATION_VECTOR:
-                    txt += "Rotacion: ";
+                    txt += "";
                     int rotation = getWindowManager().getDefaultDisplay().getRotation();
                     switch (rotation) {
                         case Surface.ROTATION_90:
@@ -164,7 +200,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
                     break;
 
                 case Sensor.TYPE_ACCELEROMETER:
-                    txt += "Acelerometro:\n";
+                    txt += "\n";
                     if (rotacion == 1 || rotacion == 2 ) {
                         txt += "x: " + dosdecimales.format(event.values[0]) + " m/seg2  ";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " m/seg2  ";
@@ -202,7 +238,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
                     }
 
                     acelerometro.setText(txt);
-                    puntuacion.setText("Puntuaciom: "+puntaje);
+                    puntuacion.setText(Integer.toString(puntaje));
 
                     if(puntaje>= puntosParaRomperLata){
                        terminarPartida();
@@ -211,7 +247,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
                     break;
 
                 case Sensor.TYPE_GYROSCOPE:
-                    txt += "Giroscopio:\n";
+                    txt += "";
                     if(rotacion == 1 || rotacion ==2){
                         txt += "x: " + dosdecimales.format(event.values[0]) + " deg/s  ";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " deg/s  ";
@@ -238,13 +274,16 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
                     }
                     giroscopio.setText(txt);
-                    puntuacion.setText("Puntuaciom: "+puntaje);
+                    puntuacion.setText(Integer.toString(puntaje));
 
-                    if(puntaje>= puntosParaRomperLata){
+                    if(puntaje >= puntosParaRomperLata){
                         terminarPartida();
                     }
 
                     break;
+            }
+            if(puntaje >= puntosParaRomperLata){
+                terminarPartida();
             }
         }
     }
@@ -257,8 +296,6 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         super.onStop();
 
         Parar_Sensor();
-
-        unregisterReceiver(receiver);
 
         SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
@@ -280,11 +317,20 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
         stopService(intent);
 
+
         if(partidaFinalizada){
             SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
             editor.clear();
             editor.apply();
+        }
+
+        if (this.intentBackground != null) {
+            stopService(this.intentBackground);
+        }
+
+        if (this.intentSensores != null) {
+            stopService(this.intentSensores);
         }
     }
 
@@ -294,6 +340,9 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         super.onPause();
 
         Parar_Sensor();
+
+        unregisterReceiver(receiver);
+        unregisterReceiver(this.receiverPostServicio);
 
 
     }
@@ -312,6 +361,13 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         super.onResume();
 
         Ini_Sensor();
+        configurarBroadcastReceiver();
+
+        // Configuracion del boradcast reciever para el servicio post event
+        this.filtroPostServicio = new IntentFilter();
+        this.filtroPostServicio.addAction(MenuActivity.ACCION_EVENTO);
+        this.filtroPostServicio.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(this.receiverPostServicio, this.filtroPostServicio);
     }
 
     @Override
@@ -325,11 +381,26 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
         receiver = new ReceptorTimer();
 
-        intent = new Intent(RegistroSensor.this, Timer.class);
-        configurarBroadcastReceiver();
+        intent = new Intent(PartidaActivity.this, Timer.class);
         intent.putExtra("Accion",ACTION_TIMER);
         intent.putExtra("tiempoRestante",tiempoRestante);
         startService(intent);
+
+        // Esto es para registrar el evento de ejecución en background
+        EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.BACKGROUND.toString(), EstadoEvento.ACTIVO.toString(),
+                "Se relizo ejecucion en background del timer");
+        Gson json = new Gson();
+        String jsonEvento = json.toJson(eventoPost);
+
+        // Creación del intent
+        this.intentBackground = new Intent(PartidaActivity.this, ServicioPostEvento.class);
+        this.intentBackground.putExtra("json", jsonEvento);
+        this.intentBackground.putExtra("uri", MenuActivity.URI_EVENTO);
+        this.intentBackground.putExtra("accion", MenuActivity.ACCION_EVENTO);
+        this.intentBackground.putExtra("token", token);
+
+        // Inicio el servicio
+        startService(this.intentBackground);
 
     }
 
@@ -341,7 +412,7 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
             String txt = "";
             if( tipo.equals(Timer.PASO_SEG)){
                 long tiempRestante = intent.getLongExtra("tiempoRestante",0);
-                txt+= "Faltan: "+ (tiempRestante/1000) + " segs";
+                txt+=(tiempRestante/1000) + " segs";
                 timer.setText(txt);
                 setTiempoRestante(tiempRestante);
             }
@@ -357,11 +428,10 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
 
     private void terminarPartida() {
 
-        // Hay que ver como setear estos valores
         int puntos = puntaje;
-        float tiempo = 30-tiempoRestante;
+        float tiempo = 30000-tiempoRestante;
         float aceleracionMax = maxAceleracionAlcanzada;
-        //
+        this.partidaFinalizada = true;
 
         Gson json = new Gson();
 
@@ -369,14 +439,13 @@ public class RegistroSensor extends AppCompatActivity implements SensorEventList
         String jsonResultado = json.toJson(resultado);
 
         // Armo el intent
-        Intent intentF = new Intent(RegistroSensor.this, FinPartidaActivity.class);
+        Intent intentF = new Intent(PartidaActivity.this, FinPartidaActivity.class);
         intentF.putExtra("json", jsonResultado);
         intentF.putExtra("token", this.token);
 
         // Inicio activity
         startActivity(intentF);
 
-        this.partidaFinalizada = true;
         // Cierro esta activity
         finish();
     }

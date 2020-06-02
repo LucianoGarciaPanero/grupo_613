@@ -53,6 +53,18 @@ public class RegistrarActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        unregisterReceiver(receiver);
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        configurarBroadcastReciever();
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar);
@@ -124,8 +136,7 @@ public class RegistrarActivity extends AppCompatActivity {
         this.intent.putExtra("uri", this.URI_REGISTRO);
         this.intent.putExtra("accion", this.ACCION_REGISTRAR);
 
-        // Configuro el boradcast para poder recibir el resultado de service
-        configurarBroadcastReciever();
+        // Configuro el receiver en el onResume
 
         // Inicio servicio
         startService(this.intent);
@@ -184,14 +195,14 @@ public class RegistrarActivity extends AppCompatActivity {
 
             // Si es un error termino el método
             if(json.equals(ServicioPostUsuario.ERROR)) {
-                Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Si no es un error lo transformo para poder analizarlo
             respuestaServicioPostUsuario = gson.fromJson(json, RespuestaServicioPostUsuario.class);
             if(respuestaServicioPostUsuario.getState().equals("success")) {
-                Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), "Registro correcto", Toast.LENGTH_SHORT).show();
                 Intent intentM = new Intent(RegistrarActivity.this, MenuActivity.class);
                 intentM.putExtra("token", respuestaServicioPostUsuario.getToken());
                 intentM.putExtra("origen", "inicio");
