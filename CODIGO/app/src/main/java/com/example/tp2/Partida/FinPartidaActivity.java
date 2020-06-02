@@ -159,7 +159,7 @@ public class FinPartidaActivity extends AppCompatActivity {
         if(mejorResultado == null) {
             return true;
         }
-        if(mejorResultado.getTiempo() <= resultado.getTiempo()) {
+        if(mejorResultado.getTiempo() >= resultado.getTiempo()) {
             return true;
         }
 
