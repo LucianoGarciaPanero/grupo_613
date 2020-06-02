@@ -241,7 +241,8 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
                     puntuacion.setText(Integer.toString(puntaje));
 
                     if(puntaje>= puntosParaRomperLata){
-                       terminarPartida();
+                        setPartidaFinalizada(true);
+                        finish();
                    }
 
                     break;
@@ -277,13 +278,15 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
                     puntuacion.setText(Integer.toString(puntaje));
 
                     if(puntaje >= puntosParaRomperLata){
-                        terminarPartida();
+                        setPartidaFinalizada(true);
+                        finish();
                     }
 
                     break;
             }
             if(puntaje >= puntosParaRomperLata){
-                terminarPartida();
+                setPartidaFinalizada(true);
+                finish();
             }
         }
     }
@@ -305,7 +308,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         editor.apply();
 
-
     }
 
     @Override
@@ -318,12 +320,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         stopService(intent);
 
 
-        if(partidaFinalizada){
-            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = prefs.edit();
-            editor.clear();
-            editor.apply();
-        }
 
         if (this.intentBackground != null) {
             stopService(this.intentBackground);
@@ -343,6 +339,14 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         unregisterReceiver(receiver);
         unregisterReceiver(this.receiverPostServicio);
+
+        if(partidaFinalizada){
+            SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.clear();
+            edit.apply();
+            terminarPartida();
+        }
 
 
     }
@@ -404,6 +408,10 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
     }
 
+    private void setPartidaFinalizada(boolean d){
+        partidaFinalizada = d;
+    }
+
     public class ReceptorTimer extends BroadcastReceiver{
 
         @Override
@@ -417,7 +425,8 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
                 setTiempoRestante(tiempRestante);
             }
             else{
-                terminarPartida();
+                setPartidaFinalizada(true);
+                finish();
             }
         }
     }
@@ -431,7 +440,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         int puntos = puntaje;
         float tiempo = 30000-tiempoRestante;
         float aceleracionMax = maxAceleracionAlcanzada;
-        this.partidaFinalizada = true;
 
         Gson json = new Gson();
 
@@ -445,9 +453,6 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
         // Inicio activity
         startActivity(intentF);
-
-        // Cierro esta activity
-        finish();
     }
 
 
