@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.tp2.Enums.Dificultad;
 import com.example.tp2.Enums.EstadoEvento;
 import com.example.tp2.Enums.TipoEvento;
 import com.example.tp2.Inicio.IniciarSesionActivity;
@@ -29,6 +30,7 @@ public class FinPartidaActivity extends AppCompatActivity {
     private String token;
     private Resultado resultado;
     private ConectorBDResultados conn;
+    private boolean gano;
 
     // Objetos de la GUI
     private TextView puntos;
@@ -92,8 +94,14 @@ public class FinPartidaActivity extends AppCompatActivity {
         String jsonResultado = intentIniciador.getExtras().getString("json");
         this.resultado = json.fromJson(jsonResultado, Resultado.class);
 
-        mostrarResultado();
-        if(esNuevoRecord()) {
+        // Valido que haya roto la lata
+        if(!(gano = rompioLata())){
+            this.labelResultado.setText("No lograste romper la lata");
+            getWindow().setBackgroundDrawable(new ColorDrawable(Color.RED));
+        }
+
+        //Valido que sea un nuevo record o que  gano
+        if(esNuevoRecord() && gano) {
             this.labelResultado.setText("Has roto un nuevo record en " + resultado.getDificultad());
             getWindow().setBackgroundDrawable(new ColorDrawable(Color.GREEN));
 
@@ -116,6 +124,33 @@ public class FinPartidaActivity extends AppCompatActivity {
 
             // Inicio servicio
             startService(this.intent);
+        } else if (gano) {
+            this.labelResultado.setText("Lograste rompera la lata");
+        }
+
+        //Por último guardamos el resultado, independientemente si gano o no
+        conn.guardarUltimoResultado(this.resultado);
+
+        mostrarResultado();
+    }
+
+    private boolean rompioLata() {
+        int puntajeMinimo;
+
+        // Establezco el puntaje mínimo según la dificultad
+        if (resultado.getDificultad().equals(Dificultad.FACIL.toString())) {
+            puntajeMinimo = 500;
+        } else if (resultado.getDificultad().equals(Dificultad.MEDIO.toString())) {
+            puntajeMinimo = 1500;
+        } else {
+            puntajeMinimo = 2500;
+        }
+
+        // Si no llega o supera a ese puntaje minimo significa que no rompio la lata
+        if (resultado.getPuntos() >= puntajeMinimo) {
+            return true;
+        } else {
+            return false;
         }
     }
 
@@ -140,7 +175,7 @@ public class FinPartidaActivity extends AppCompatActivity {
 
     private void mostrarResultado() {
         this.puntos.setText(Integer.toString(this.resultado.getPuntos()));
-        this.tiempo.setText(Float.toString(this.resultado.getTiempo()) + " seg");
+        this.tiempo.setText(Float.toString(this.resultado.getTiempo()/1000) + " seg");
         this.aceleracionMax.setText(Float.toString(this.resultado.getAcleracionMax()) + " m/seg2");
         this.dificultad.setText(this.resultado.getDificultad());
     }
