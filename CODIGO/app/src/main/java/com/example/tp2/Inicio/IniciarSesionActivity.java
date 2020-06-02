@@ -135,14 +135,14 @@ public class IniciarSesionActivity extends AppCompatActivity {
 
             // Si es un error termino el método
             if(json.equals(ServicioPostUsuario.ERROR)) {
-                Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), "Datos incorrectos", Toast.LENGTH_SHORT).show();
                 return;
             }
 
             // Si no es un error lo transformo para poder analizarlo
             respuestaServicioPostUsuario = gson.fromJson(json, RespuestaServicioPostUsuario.class);
             if(respuestaServicioPostUsuario.getState().equals("success")) {
-                Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_LONG).show();
+                Toast.makeText(context.getApplicationContext(), "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show();
                 Intent intentM = new Intent(IniciarSesionActivity.this, MenuActivity.class);
                 intentM.putExtra("token", respuestaServicioPostUsuario.getToken());
                 intentM.putExtra("origen", "inicio");

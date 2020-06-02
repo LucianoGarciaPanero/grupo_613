@@ -14,13 +14,21 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.util.Log;
 import android.view.Surface;
 import android.widget.TextView;
 
 import com.example.tp2.Enums.Dificultad;
+import com.example.tp2.Enums.EstadoEvento;
 import com.example.tp2.Enums.NombreColor;
+import com.example.tp2.Enums.TipoEvento;
+import com.example.tp2.Inicio.IniciarSesionActivity;
+import com.example.tp2.Menu.EventoPost;
+import com.example.tp2.Menu.MenuActivity;
+import com.example.tp2.Menu.ReceptorEvento;
 import com.example.tp2.Menu.Resultado;
+import com.example.tp2.Menu.ServicioPostEvento;
 import com.example.tp2.R;
 import com.google.gson.Gson;
 
@@ -49,6 +57,10 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
     private boolean                     partidaFinalizada;
     private int                         puntosParaRomperLata;
     private int                         maxAceleracionAlcanzada;
+
+    private Intent intentBackground;
+    private IntentFilter filtroBackground;
+    private ReceptorEvento receiverBackground = new ReceptorEvento();
 
     DecimalFormat dosdecimales = new DecimalFormat("###.###");
 
@@ -290,6 +302,10 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
             editor.clear();
             editor.apply();
         }
+
+        if (this.intentBackground != null) {
+            stopService(this.intentBackground);
+        }
     }
 
     @Override
@@ -334,6 +350,28 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         intent.putExtra("Accion",ACTION_TIMER);
         intent.putExtra("tiempoRestante",tiempoRestante);
         startService(intent);
+
+        // Esto es para registrar el evento de ejecución en background
+        EventoPost eventoPost = new EventoPost(IniciarSesionActivity.ENV, TipoEvento.BACKGROUND.toString(), EstadoEvento.ACTIVO.toString(),
+                "Se relizo ejecucion en background del timer");
+        Gson json = new Gson();
+        String jsonEvento = json.toJson(eventoPost);
+
+        // Creación del intent
+        this.intentBackground = new Intent(PartidaActivity.this, ServicioPostEvento.class);
+        this.intentBackground.putExtra("json", jsonEvento);
+        this.intentBackground.putExtra("uri", MenuActivity.URI_EVENTO);
+        this.intentBackground.putExtra("accion", MenuActivity.ACCION_EVENTO);
+        this.intentBackground.putExtra("token", token);
+
+        // Configuracion del boradcast reciever
+        this.filtroBackground = new IntentFilter();
+        this.filtroBackground.addAction(MenuActivity.ACCION_EVENTO);
+        this.filtroBackground.addCategory(Intent.CATEGORY_DEFAULT);
+        registerReceiver(this.receiverBackground, this.filtroBackground);
+
+        // Inicio el servicio
+        startService(this.intentBackground);
 
     }
 
