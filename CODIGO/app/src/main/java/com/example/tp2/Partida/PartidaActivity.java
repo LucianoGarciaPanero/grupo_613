@@ -37,6 +37,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
     private TextView                    giroscopio;
     private TextView                    rotada;
     private TextView                    timer;
+    private TextView                    puntuacionObjetivo;
     private Integer                     rotacion; //0 vertical, 1 rotado a izquierda, 2 rotado a derecha
     private TextView                    puntuacion;
     private Double[]                    valorCoordenadaAcelerometro   = new Double[2]; //pos 0 X, pos 1 Y
@@ -54,12 +55,13 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_registro_sensor);
+        setContentView(R.layout.activity_partida);
 
         acelerometro    = (TextView) findViewById(R.id.acelerometro);
         giroscopio      = (TextView) findViewById(R.id.giroscopio);
         rotada          = (TextView) findViewById(R.id.rotada);
         puntuacion      = (TextView) findViewById(R.id.puntuacion);
+        puntuacionObjetivo      = (TextView) findViewById(R.id.puntuacionObjetivo);
         timer           = (TextView) findViewById(R.id.timer);
 
         mSensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
@@ -105,6 +107,8 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
         } else {
             this.puntosParaRomperLata = 500;
         }
+
+        this.puntuacionObjetivo.setText(Integer.toString(this.puntosParaRomperLata));
     }
 
     private void configurarBroadcastReceiver(){
@@ -143,7 +147,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
             switch (event.sensor.getType()) {
                 case Sensor.TYPE_ROTATION_VECTOR:
-                    txt += "Rotacion: ";
+                    txt += "";
                     int rotation = getWindowManager().getDefaultDisplay().getRotation();
                     switch (rotation) {
                         case Surface.ROTATION_90:
@@ -164,7 +168,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
                     break;
 
                 case Sensor.TYPE_ACCELEROMETER:
-                    txt += "Acelerometro:\n";
+                    txt += "\n";
                     if (rotacion == 1 || rotacion == 2 ) {
                         txt += "x: " + dosdecimales.format(event.values[0]) + " m/seg2  ";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " m/seg2  ";
@@ -202,7 +206,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
                     }
 
                     acelerometro.setText(txt);
-                    puntuacion.setText("Puntuaciom: "+puntaje);
+                    puntuacion.setText(Integer.toString(puntaje));
 
                     if(puntaje>= puntosParaRomperLata){
                        terminarPartida();
@@ -211,7 +215,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
                     break;
 
                 case Sensor.TYPE_GYROSCOPE:
-                    txt += "Giroscopio:\n";
+                    txt += "";
                     if(rotacion == 1 || rotacion ==2){
                         txt += "x: " + dosdecimales.format(event.values[0]) + " deg/s  ";
                         txt += "y: " + dosdecimales.format(event.values[1]) + " deg/s  ";
@@ -238,7 +242,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
 
                     }
                     giroscopio.setText(txt);
-                    puntuacion.setText("Puntuaciom: "+puntaje);
+                    puntuacion.setText(Integer.toString(puntaje));
 
                     if(puntaje>= puntosParaRomperLata){
                         terminarPartida();
@@ -341,7 +345,7 @@ public class PartidaActivity extends AppCompatActivity implements SensorEventLis
             String txt = "";
             if( tipo.equals(Timer.PASO_SEG)){
                 long tiempRestante = intent.getLongExtra("tiempoRestante",0);
-                txt+= "Faltan: "+ (tiempRestante/1000) + " segs";
+                txt+=(tiempRestante/1000) + " segs";
                 timer.setText(txt);
                 setTiempoRestante(tiempRestante);
             }
